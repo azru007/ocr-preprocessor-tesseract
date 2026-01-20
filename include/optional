@@ -1,0 +1,8 @@
+#pragma once
+#include <experimental/optional>
+
+namespace std {
+    using experimental::optional;
+    using experimental::nullopt;
+    using experimental::make_optional;
+}

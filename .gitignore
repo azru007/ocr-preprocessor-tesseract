@@ -1,0 +1,21 @@
+# Build artifacts
+build/
+*.o
+*.obj
+*.exe
+ocr_preprocessor
+
+# Temporary environments
+tmp_venv/
+__pycache__/
+
+# IDE settings
+.vscode/
+.idea/
+
+# OS specific
+.DS_Store
+
+# Large/generated files (optional, keeping models/images related to source if user wants, 
+# but usually we ignore output)
+output/
