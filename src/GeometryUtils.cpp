@@ -352,6 +352,30 @@ namespace OCR {
                 bestQ.p[3] = toWorld(minPara, maxPerp);
             }
         }
+
+        // Reorder points to be: TL, TR, BR, BL (Spatial)
+        // 1. Sort by X
+        std::vector<Point2D> pts(4);
+        for(int i=0; i<4; ++i) pts[i] = bestQ.p[i];
+        
+        std::sort(pts.begin(), pts.end(), [](const Point2D& a, const Point2D& b) {
+            return a.x < b.x;
+        });
+
+        // 2. Split Left/Right
+        Point2D left[2] = { pts[0], pts[1] };
+        Point2D right[2] = { pts[2], pts[3] };
+
+        // 3. Sort by Y
+        if (left[0].y > left[1].y) std::swap(left[0], left[1]);
+        if (right[0].y > right[1].y) std::swap(right[0], right[1]);
+
+        // 4. Assign: TL, TR, BR, BL
+        bestQ.p[0] = left[0];  // TL
+        bestQ.p[1] = right[0]; // TR
+        bestQ.p[2] = right[1]; // BR
+        bestQ.p[3] = left[1];  // BL
+
         return bestQ;
     }
 
