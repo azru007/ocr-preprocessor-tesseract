@@ -83,8 +83,9 @@ int main(int argc, char** argv) {
     float scaleX = (float)mapW / (float)w;
     float scaleY = (float)mapH / (float)h;
     
-    auto quads = OCR::GeometryUtils::GetQuadsFromMap(map, mapW, mapH, 0.3f, 1.5f);
-    std::cout << "Found " << quads.size() << " text regions." << std::endl;
+    // Use Stable Component Analysis
+    auto quads = OCR::GeometryUtils::FindStableTextRegions(map, mapW, mapH, 0.3f);
+    std::cout << "Found " << quads.size() << " text regions after stable merging." << std::endl;
 
     // 5. Process Regions
     // Create output directory

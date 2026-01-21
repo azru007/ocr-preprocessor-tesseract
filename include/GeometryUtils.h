@@ -12,6 +12,9 @@ namespace OCR {
         // w, h: Dimension of the map.
         // threshold: Binary threshold (e.g., 0.3).
         static std::vector<Quad> GetQuadsFromMap(const std::vector<float>& map, int w, int h, float threshold = 0.3f, float unclipRatio = 1.5f);
+        
+        // New: Stable Component Analysis algorithm
+        static std::vector<Quad> FindStableTextRegions(const std::vector<float>& map, int w, int h, float threshold = 0.3f);
 
     private:
         // Helper: Convert boolean map to list of contours/polygons (Vector of Points)
