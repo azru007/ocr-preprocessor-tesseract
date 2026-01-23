@@ -105,6 +105,10 @@ file(GLOB HEADERS "include/*.h")
 
 add_executable(ocr_preprocessor ${SOURCES} ${HEADERS})
 
+# Inject absolute path to output directory
+target_compile_definitions(ocr_preprocessor PRIVATE OCR_OUTPUT_DIR="${CMAKE_SOURCE_DIR}/output")
+
+
 # ----------------------------
 # Link ONNX Runtime
 # ----------------------------
