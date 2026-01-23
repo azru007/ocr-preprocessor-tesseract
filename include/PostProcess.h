@@ -11,6 +11,9 @@ namespace OCR {
         // Returns a new single-channel ImageBuffer (black/white).
         static ImageBuffer Binarize(const ImageBuffer& src);
 
+        // Helper: Compute Otsu threshold from grayscale pixel values
+        static int GetOtsuThreshold(const std::vector<unsigned char>& grayPixels);
+
         // Saves buffer to file.
         static bool SaveImage(const ImageBuffer& img, const std::string& path);
     };

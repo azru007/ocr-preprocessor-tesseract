@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <algorithm> // for min/max
+#include <cmath>     // for floor/ceil
 
 // Define STB_IMAGE_IMPLEMENTATION here
 #define STB_IMAGE_IMPLEMENTATION
@@ -34,6 +36,18 @@ void PrepareOutputDirectory(const std::string& path) {
     fs::create_directories(path);
 }
 
+// Helper: Point in Polygon (Ray Raycasting)
+bool IsPointInQuad(double x, double y, const OCR::Quad& q) {
+    bool inside = false;
+    // Quad always has 4 points
+    for (int i = 0, j = 3; i < 4; j = i++) {
+        if (((q.p[i].y > y) != (q.p[j].y > y)) &&
+            (x < (q.p[j].x - q.p[i].x) * (y - q.p[i].y) / (q.p[j].y - q.p[i].y) + q.p[i].x)) {
+            inside = !inside;
+        }
+    }
+    return inside;
+}
 
 int main(int argc, char** argv) {
     if (argc < 2) {
@@ -96,30 +110,81 @@ int main(int argc, char** argv) {
     auto quads = OCR::GeometryUtils::FindStableTextRegions(map, mapW, mapH, 0.3f);
     std::cout << "Found " << quads.size() << " text regions after stable merging." << std::endl;
 
-    // 5. Process Regions
+    // 5. Create Masked Output
     // Prepare output directory (clean & create)
     PrepareOutputDirectory(outDir);
 
-    int idx = 0;
-    for (auto& q : quads) {
+    // Create a white canvas
+    size_t imgSize = (size_t)w * h * 3;
+    unsigned char* whiteData = (unsigned char*)malloc(imgSize);
+    if (!whiteData) {
+        std::cerr << "Failed to allocate memory for output image." << std::endl;
+        return 1;
+    }
+    memset(whiteData, 255, imgSize); // Fill with white
+    
+    // Process each quad
+    for (const auto& q : quads) {
         // Scale Quad back to original
         OCR::Quad originalQ;
+        
+        // Compute center for placement
+        double centerX = 0, centerY = 0;
+        
         for (int i=0; i<4; ++i) {
             originalQ.p[i].x = q.p[i].x / scaleX;
             originalQ.p[i].y = q.p[i].y / scaleY;
+            centerX += originalQ.p[i].x;
+            centerY += originalQ.p[i].y;
         }
+        centerX /= 4.0;
+        centerY /= 4.0;
 
-        // Warp from Original Image
+        // 1. Warp (Dewarp/Deskew)
+        // This creates a rectilinear image of the text
         OCR::ImageBuffer warped = OCR::ImageWarp::Warp(inputImg, originalQ);
         
-        // Binarize
+        // 2. Binarize (Clean)
         OCR::ImageBuffer bin = OCR::PostProcess::Binarize(warped);
 
-        // Save
-        std::string outName = outDir + "/region_" + std::to_string(idx++) + ".png";
-        OCR::PostProcess::SaveImage(bin, outName);
-        
-        std::cout << "Saved: " << outName << std::endl;
+        // 3. Paste into White Canvas (Centering)
+        // Determine top-left position to center the rect on the original quad center
+        int pasteX = (int)(centerX - bin.w / 2.0);
+        int pasteY = (int)(centerY - bin.h / 2.0);
+
+        for (int y = 0; y < bin.h; ++y) {
+            for (int x = 0; x < bin.w; ++x) {
+                // Calculate target position
+                int dstX = pasteX + x;
+                int dstY = pasteY + y;
+
+                // Boundary check
+                if (dstX >= 0 && dstX < w && dstY >= 0 && dstY < h) {
+                    // Check if pixel is "Text" (Black/0)
+                    // Binarize returns 1 channel, 0 or 255.
+                    // Assuming 0 is black (text).
+                    unsigned char val = bin.data[y * bin.w + x];
+                    
+                    if (val == 0) { // If Text
+                        int offset = (dstY * w + dstX) * 3;
+                        whiteData[offset] = 0;
+                        whiteData[offset+1] = 0;
+                        whiteData[offset+2] = 0;
+                    }
+                    // If White (255), we don't copy, treating as transparent to avoid
+                    // overwriting other potential text/background.
+                }
+            }
+        }
+    }
+
+    // Save the result
+    OCR::ImageBuffer outputImg(whiteData, w, h, 3, true); // true = own it
+    std::string outName = outDir + "/masked.png";
+    if (OCR::PostProcess::SaveImage(outputImg, outName)) {
+        std::cout << "Saved masked image to: " << outName << std::endl;
+    } else {
+        std::cerr << "Failed to save image." << std::endl;
     }
 
     std::cout << "Done." << std::endl;

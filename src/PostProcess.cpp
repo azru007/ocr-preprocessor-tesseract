@@ -7,32 +7,13 @@
 
 namespace OCR {
 
-    ImageBuffer PostProcess::Binarize(const ImageBuffer& src) {
-        int w = src.w;
-        int h = src.h;
-        int c = src.channels;
-
-        // 1. Grayscale
-        std::vector<unsigned char> gray(w * h);
-        if (c >= 3) {
-            for (int i = 0; i < w * h; ++i) {
-                unsigned char r = src.data[i * c + 0];
-                unsigned char g = src.data[i * c + 1];
-                unsigned char b = src.data[i * c + 2];
-                // Luminance
-                gray[i] = (unsigned char)(0.299f * r + 0.587f * g + 0.114f * b);
-            }
-        } else {
-            // Already 1 channel
-             for (int i = 0; i < w * h; ++i) gray[i] = src.data[i*c];
-        }
-
-        // 2. Otsu's Method
-        // Histogram
+    int PostProcess::GetOtsuThreshold(const std::vector<unsigned char>& grayPixels) {
+        if (grayPixels.empty()) return 0;
+        
         long histogram[256] = {0};
-        for (unsigned char p : gray) histogram[p]++;
+        for (unsigned char p : grayPixels) histogram[p]++;
 
-        double total = w * h;
+        double total = grayPixels.size();
         double currentWeight = 0;
         double currentMean = 0;
         
@@ -65,6 +46,31 @@ namespace OCR {
             currentWeight = weightB;
             currentMean = meanB;
         }
+        return threshold;
+    }
+
+    ImageBuffer PostProcess::Binarize(const ImageBuffer& src) {
+        int w = src.w;
+        int h = src.h;
+        int c = src.channels;
+
+        // 1. Grayscale
+        std::vector<unsigned char> gray(w * h);
+        if (c >= 3) {
+            for (int i = 0; i < w * h; ++i) {
+                unsigned char r = src.data[i * c + 0];
+                unsigned char g = src.data[i * c + 1];
+                unsigned char b = src.data[i * c + 2];
+                // Luminance
+                gray[i] = (unsigned char)(0.299f * r + 0.587f * g + 0.114f * b);
+            }
+        } else {
+            // Already 1 channel
+             for (int i = 0; i < w * h; ++i) gray[i] = src.data[i*c];
+        }
+
+        // 2. Otsu's Method
+        int threshold = GetOtsuThreshold(gray);
 
         // 3. Apply Threshold
         unsigned char* binData = (unsigned char*)malloc(w * h);
