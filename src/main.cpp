@@ -23,12 +23,15 @@ bool FileExists(const std::string& name) {
     }
 }
 
-// Simple mkdir (windows)
-#include <sys/stat.h>
-#include <sys/types.h>
+// Use C++17 filesystem
+#include <filesystem>
+namespace fs = std::filesystem;
 
-void CreateOutputDirectory(const std::string& path) {
-    mkdir(path.c_str(), 0777);
+void PrepareOutputDirectory(const std::string& path) {
+    if (fs::exists(path)) {
+        fs::remove_all(path); // Clean existing
+    }
+    fs::create_directories(path);
 }
 
 
@@ -40,6 +43,12 @@ int main(int argc, char** argv) {
 
     std::string imagePath = argv[1];
     std::string modelPath = (argc > 2) ? argv[2] : "det_v5.onnx";
+    
+#ifdef OCR_OUTPUT_DIR
+    std::string outDir = OCR_OUTPUT_DIR;
+#else
+    std::string outDir = "output";
+#endif
 
     if (!FileExists(imagePath)) {
         std::cerr << "Error: Image not found: " << imagePath << std::endl;
@@ -88,9 +97,8 @@ int main(int argc, char** argv) {
     std::cout << "Found " << quads.size() << " text regions after stable merging." << std::endl;
 
     // 5. Process Regions
-    // Create output directory
-    std::string outDir = "output";
-    CreateOutputDirectory(outDir);
+    // Prepare output directory (clean & create)
+    PrepareOutputDirectory(outDir);
 
     int idx = 0;
     for (auto& q : quads) {
