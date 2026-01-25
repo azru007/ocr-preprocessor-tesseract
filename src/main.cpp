@@ -106,9 +106,9 @@ int main(int argc, char** argv) {
     float scaleX = (float)mapW / (float)w;
     float scaleY = (float)mapH / (float)h;
     
-    // Use Stable Component Analysis
-    auto quads = OCR::GeometryUtils::FindStableTextRegions(map, mapW, mapH, 0.3f);
-    std::cout << "Found " << quads.size() << " text regions after stable merging." << std::endl;
+    // Use standard Unclip and Union
+    auto quads = OCR::GeometryUtils::GetQuadsFromMap(map, mapW, mapH, 0.3f, 2.0f);
+    std::cout << "Found " << quads.size() << " text regions after merging." << std::endl;
 
     // 5. Create Masked Output
     // Prepare output directory (clean & create)
@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
         // This creates a rectilinear image of the text
         OCR::ImageBuffer warped = OCR::ImageWarp::Warp(inputImg, originalQ);
         
-        // 2. Binarize (Clean)
+        // 2. Binarize (as Mask)
         OCR::ImageBuffer bin = OCR::PostProcess::Binarize(warped);
 
         // 3. Paste into White Canvas (Centering)
@@ -160,19 +160,22 @@ int main(int argc, char** argv) {
 
                 // Boundary check
                 if (dstX >= 0 && dstX < w && dstY >= 0 && dstY < h) {
-                    // Check if pixel is "Text" (Black/0)
-                    // Binarize returns 1 channel, 0 or 255.
-                    // Assuming 0 is black (text).
-                    unsigned char val = bin.data[y * bin.w + x];
+                    // Check mask (binarized image)
+                    // 0 = Text (Keep), 255 = Background (Clear/Skip)
+                    unsigned char maskVal = bin.data[y * bin.w + x];
                     
-                    if (val == 0) { // If Text
-                        int offset = (dstY * w + dstX) * 3;
-                        whiteData[offset] = 0;
-                        whiteData[offset+1] = 0;
-                        whiteData[offset+2] = 0;
+                    if (maskVal == 0) {
+                        // It is text: Copy RGB from original warped image
+                        int srcOffset = (y * warped.w + x) * warped.channels;
+                        int dstOffset = (dstY * w + dstX) * 3;
+                        
+                        if (warped.channels == 3) {
+                            whiteData[dstOffset]   = warped.data[srcOffset];
+                            whiteData[dstOffset+1] = warped.data[srcOffset+1];
+                            whiteData[dstOffset+2] = warped.data[srcOffset+2];
+                        }
                     }
-                    // If White (255), we don't copy, treating as transparent to avoid
-                    // overwriting other potential text/background.
+                    // Else: It is background, leave whiteData as 255 (White)
                 }
             }
         }
