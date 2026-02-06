@@ -120,7 +120,9 @@ namespace OCR {
     }
 
     std::vector<Quad> GeometryUtils::FindStableTextRegions(const std::vector<float>& map, int w, int h, float threshold) {
-        // 1. Get Initial Blobs (Standard Pipeline Steps 1-4)
+        // Simplified Logic: Standard Expansion and Merge (UnclipRatio = 1.5)
+        
+        // 1. Threshold & Find Blobs
         std::vector<unsigned char> bitMap(w * h, 0);
         for (size_t i = 0; i < map.size(); ++i) {
             if (map[i] > threshold) bitMap[i] = 255;
@@ -129,6 +131,7 @@ namespace OCR {
         std::vector<std::vector<Point2D>> blobs = FindBlobs(bitMap, w, h);
         if (blobs.empty()) return {};
 
+        // 2. Initial Union of Blobs
         ClipperLib::Clipper clipper;
         for (const auto& blob : blobs) {
             std::vector<Point2D> hull = GetConvexHull(blob);
@@ -141,72 +144,42 @@ namespace OCR {
         ClipperLib::Paths initialPaths;
         clipper.Execute(ClipperLib::ctUnion, initialPaths, ClipperLib::pftNonZero, ClipperLib::pftNonZero);
 
-        // 2. Scale-Space Analysis
-        struct State {
-            int offset;
-            int count;
-        };
-        std::vector<State> history;
+        // 3. Expand (Unclip) and Merge Overlapping
+        float unclipRatio = 1.5f;
+        ClipperLib::Clipper unionClipper;
 
-        // Try offsets from 0 to 60px (scaled by 1000 for clipper)
-        // Step size: 2px (2000 units)
-        for (int i = 0; i <= 60; i += 2) {
-            double currentOffset = i * 1000.0;
+        for (const auto& path : initialPaths) {
+            std::vector<Point2D> poly;
+            for (const auto& p : path) {
+                poly.push_back({ (double)p.X / 1000.0, (double)p.Y / 1000.0 });
+            }
             
-            ClipperLib::ClipperOffset offsetter;
-            offsetter.AddPaths(initialPaths, ClipperLib::jtRound, ClipperLib::etClosedPolygon);
-            ClipperLib::Paths expanded;
-            offsetter.Execute(expanded, currentOffset);
+            if (poly.size() < 3) continue;
+
+            // Calculate unclip distance
+            double area = PolygonArea(poly);
+            double length = PolygonLength(poly);
+            if (length <= 0) continue;
             
-            // Union them to find merges
-            ClipperLib::Clipper unionClipper;
-            unionClipper.AddPaths(expanded, ClipperLib::ptSubject, true);
-            ClipperLib::Paths merged;
-            unionClipper.Execute(ClipperLib::ctUnion, merged, ClipperLib::pftNonZero, ClipperLib::pftNonZero);
+            double distance = area * unclipRatio / length;
+            double offsetDist = distance * 1000.0;
 
-            history.push_back({i, (int)merged.size()});
-        }
+            ClipperLib::ClipperOffset offset;
+            offset.AddPath(path, ClipperLib::jtRound, ClipperLib::etClosedPolygon);
+            
+            ClipperLib::Paths expandedPaths;
+            offset.Execute(expandedPaths, offsetDist);
 
-        // 3. Find Plateau
-        // Looking for longest run of constant count
-        int maxPlateauLen = 0;
-        int bestStartIdx = 0;
-        
-        int currentRun = 1;
-        for (size_t i = 1; i < history.size(); ++i) {
-            if (history[i].count == history[i-1].count) {
-                currentRun++;
-            } else {
-                if (currentRun > maxPlateauLen) {
-                    maxPlateauLen = currentRun;
-                    bestStartIdx = i - currentRun;
-                }
-                currentRun = 1;
+            for(const auto& ep : expandedPaths) {
+                 unionClipper.AddPath(ep, ClipperLib::ptSubject, true);
             }
         }
-        // Check last run
-        if (currentRun > maxPlateauLen) {
-            maxPlateauLen = currentRun;
-            bestStartIdx = history.size() - currentRun;
-        }
 
-        // 4. Select Best Offset
-        // We pick the start of the plateau as requested ("taken from the beginning of it")
-        int bestOffsetVal = history[bestStartIdx].offset;
-        std::cout << "Stable Component Analysis: Best Offset found at " << bestOffsetVal << "px (Stable for " << maxPlateauLen << " steps, Region Count: " << history[bestStartIdx].count << ")" << std::endl;
-
-        // 5. Generate Final Result
-        double finalOffset = bestOffsetVal * 1000.0;
-        ClipperLib::ClipperOffset offsetter;
-        offsetter.AddPaths(initialPaths, ClipperLib::jtRound, ClipperLib::etClosedPolygon);
-        ClipperLib::Paths finalPaths;
-        offsetter.Execute(finalPaths, finalOffset);
-
-        ClipperLib::Clipper finalUnion;
-        finalUnion.AddPaths(finalPaths, ClipperLib::ptSubject, true);
+        // 4. Final Union
         ClipperLib::Paths mergedPaths;
-        finalUnion.Execute(ClipperLib::ctUnion, mergedPaths, ClipperLib::pftNonZero, ClipperLib::pftNonZero);
+        unionClipper.Execute(ClipperLib::ctUnion, mergedPaths, ClipperLib::pftNonZero, ClipperLib::pftNonZero);
 
+        // 5. Convert to Results
         std::vector<Quad> results;
         for (const auto& path : mergedPaths) {
             std::vector<Point2D> expPoly;
