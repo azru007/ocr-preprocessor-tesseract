@@ -146,7 +146,13 @@ int main(int argc, char** argv) {
         
         // 2. Binarize (Clean) using Adaptive Thresholding (Sauvola)
         // Window size 25, k=0.2 are good defaults for document images
-        OCR::ImageBuffer bin = OCR::PostProcess::AdaptiveBinarize(warped, 25, 0.2);
+        
+        // 2.1 Normalize Background (Flip if dark background)
+        // Checks Center Row vs Edge Rows brightness
+        OCR::ImageBuffer normalized = OCR::PostProcess::NormalizeBackground(warped);
+        
+        // 2.2 Adaptive Binarize
+        OCR::ImageBuffer bin = OCR::PostProcess::AdaptiveBinarize(normalized, 25, 0.2);
 
         // 3. Paste into White Canvas (Centering)
         // Determine top-left position to center the rect on the original quad center

@@ -174,4 +174,61 @@ namespace OCR {
         return ImageBuffer(binData, w, h, 1, true);
     }
 
+    ImageBuffer PostProcess::NormalizeBackground(const ImageBuffer& src) {
+        int w = src.w;
+        int h = src.h;
+        int c = src.channels;
+        
+        if (h < 3) return ImageBuffer(src.data, w, h, c, false); // Too small to process, return shallow copy/original logic handled by caller? 
+        // Actually we need to return a new buffer because ImageBuffer owns its data by default in our usage pattern
+        // Or we can just copy it.
+        
+        // Helper to get row average luminance
+        auto getRowAvg = [&](int y) -> double {
+            double sum = 0;
+            for (int x = 0; x < w; ++x) {
+                unsigned char grayVal;
+                int idx = (y * w + x) * c;
+                if (c >= 3) {
+                     unsigned char r = src.data[idx];
+                     unsigned char g = src.data[idx + 1];
+                     unsigned char b = src.data[idx + 2];
+                     grayVal = (unsigned char)(0.299f * r + 0.587f * g + 0.114f * b);
+                } else {
+                     grayVal = src.data[idx];
+                }
+                sum += grayVal;
+            }
+            return sum / w;
+        };
+
+        // Center Row
+        double centerAvg = getRowAvg(h / 2);
+        
+        // Edge Rows (Top and Bottom)
+        double edgeAvg = (getRowAvg(0) + getRowAvg(h - 1)) / 2.0;
+
+        // Logic: 
+        // If Center (Text) is Lighter (> value) than Edge (Background), 
+        // it means we have Light Text on Dark Background.
+        // We want Dark Text on Light Background.
+        // So we should INVERT.
+        
+        bool needInvert = (centerAvg > edgeAvg);
+        
+        // Create new buffer
+        size_t size = (size_t)w * h * c;
+        unsigned char* newData = (unsigned char*)malloc(size);
+        
+        if (needInvert) {
+             for (size_t i = 0; i < size; ++i) {
+                newData[i] = 255 - src.data[i];
+            }
+        } else {
+             memcpy(newData, src.data, size);
+        }
+
+        return ImageBuffer(newData, w, h, c, true);
+    }
+
 }

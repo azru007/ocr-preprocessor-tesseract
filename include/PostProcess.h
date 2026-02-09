@@ -22,6 +22,11 @@ namespace OCR {
         // k: Sensitivity factor (0.2 - 0.5 usually)
         // R: Dynamic range of standard deviation (128 for grayscale)
         static ImageBuffer AdaptiveBinarize(const ImageBuffer& src, int windowSize = 25, double k = 0.2, double R = 128.0);
+
+        // Normalize background to ensure dark text on light background.
+        // It compares the center row intensity with edge rows.
+        // If center is lighter than edges, it flips the image.
+        static ImageBuffer NormalizeBackground(const ImageBuffer& src);
     };
 
 }
