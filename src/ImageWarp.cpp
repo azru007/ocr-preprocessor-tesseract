@@ -48,32 +48,42 @@ namespace OCR {
                 double srcY = (H[3] * currX + H[4] * currY + H[5]) / z;
 
                 // Sample src at (srcX, srcY)
-                int x_l = (int)srcX;
-                int y_l = (int)srcY;
+                // Use floor to get the top-left integer coordinate
+                int x_l = static_cast<int>(std::floor(srcX));
+                int y_l = static_cast<int>(std::floor(srcY));
                 int x_h = x_l + 1;
                 int y_h = y_l + 1;
 
-                // Clamp
-                if (x_l < 0) x_l = 0; if (x_h >= src.w) x_h = src.w - 1;
-                if (y_l < 0) y_l = 0; if (y_h >= src.h) y_h = src.h - 1;
+                // Weights
+                float xw = (float)(srcX - x_l);
+                float yw = (float)(srcY - y_l);
 
-                float xw = srcX - x_l;
-                float yw = srcY - y_l;
-                
-                // If out of bounds, maybe black? 
-                // Simple clamping above handles it (repeats edge).
-                
+                // Boundary checks
+                // Helper lambda to get pixel safely
+                auto getPixel = [&](int px, int py, int channel) -> unsigned char {
+                    // Clamp coordinates to valid range
+                    int cx = std::max(0, std::min(px, src.w - 1));
+                    int cy = std::max(0, std::min(py, src.h - 1));
+                    return src.data[(cy * src.w + cx) * src.channels + channel];
+                };
+
                 for (int c = 0; c < src.channels; ++c) {
-                    unsigned char val_a = src.data[(y_l * src.w + x_l) * src.channels + c];
-                    unsigned char val_b = src.data[(y_l * src.w + x_h) * src.channels + c];
-                    unsigned char val_c = src.data[(y_h * src.w + x_l) * src.channels + c];
-                    unsigned char val_d = src.data[(y_h * src.w + x_h) * src.channels + c];
+                    unsigned char val_a = getPixel(x_l, y_l, c);
+                    unsigned char val_b = getPixel(x_h, y_l, c);
+                    unsigned char val_c = getPixel(x_l, y_h, c);
+                    unsigned char val_d = getPixel(x_h, y_h, c);
 
-                    float top = val_a * (1 - xw) + val_b * xw;
-                    float bot = val_c * (1 - xw) + val_d * xw;
-                    float finalVal = top * (1 - yw) + bot * yw;
+                    // Interpolate Top and Bottom edges
+                    float top = val_a * (1.0f - xw) + val_b * xw;
+                    float bot = val_c * (1.0f - xw) + val_d * xw;
+                    
+                    // Interpolate vertically
+                    float finalVal = top * (1.0f - yw) + bot * yw;
 
-                    newData[(y * dstW + x) * src.channels + c] = (unsigned char)finalVal;
+                    // Clamp result to 0-255
+                    unsigned char res = (unsigned char)std::max(0.0f, std::min(255.0f, finalVal));
+
+                    newData[(y * dstW + x) * src.channels + c] = res;
                 }
             }
         }

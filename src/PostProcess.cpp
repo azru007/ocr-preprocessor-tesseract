@@ -86,4 +86,92 @@ namespace OCR {
         return stbi_write_png(path.c_str(), img.w, img.h, img.channels, img.data, img.w * img.channels);
     }
 
+    ImageBuffer PostProcess::AdaptiveBinarize(const ImageBuffer& src, int windowSize, double k, double R) {
+        int w = src.w;
+        int h = src.h;
+        int c = src.channels;
+
+        // 1. Grayscale extraction
+        std::vector<unsigned char> gray(w * h);
+        if (c >= 3) {
+            for (int i = 0; i < w * h; ++i) {
+                unsigned char r = src.data[i * c + 0];
+                unsigned char g = src.data[i * c + 1];
+                unsigned char b = src.data[i * c + 2];
+                gray[i] = (unsigned char)(0.299f * r + 0.587f * g + 0.114f * b);
+            }
+        } else {
+            for (int i = 0; i < w * h; ++i) gray[i] = src.data[i * c];
+        }
+
+        // 2. Integral Images (Sum and Sum of Squares)
+        // Using double to prevent overflow
+        std::vector<double> integralSum(w * h, 0.0);
+        std::vector<double> integralSqSum(w * h, 0.0);
+
+        for (int y = 0; y < h; ++y) {
+            double rowSum = 0;
+            double rowSqSum = 0;
+            for (int x = 0; x < w; ++x) {
+                int idx = y * w + x;
+                unsigned char val = gray[idx];
+                rowSum += val;
+                rowSqSum += val * val;
+
+                if (y == 0) {
+                    integralSum[idx] = rowSum;
+                    integralSqSum[idx] = rowSqSum;
+                } else {
+                    integralSum[idx] = integralSum[(y - 1) * w + x] + rowSum;
+                    integralSqSum[idx] = integralSqSum[(y - 1) * w + x] + rowSqSum;
+                }
+            }
+        }
+
+        // 3. Apply Sauvola Thresholding
+        unsigned char* binData = (unsigned char*)malloc(w * h);
+        int halfWin = windowSize / 2;
+
+        for (int y = 0; y < h; ++y) {
+            for (int x = 0; x < w; ++x) {
+                int x1 = std::max(0, x - halfWin);
+                int y1 = std::max(0, y - halfWin);
+                int x2 = std::min(w - 1, x + halfWin);
+                int y2 = std::min(h - 1, y + halfWin);
+
+                int count = (x2 - x1 + 1) * (y2 - y1 + 1);
+
+                double sum = integralSum[y2 * w + x2];
+                double sqSum = integralSqSum[y2 * w + x2];
+
+                if (y1 > 0) {
+                    sum -= integralSum[(y1 - 1) * w + x2];
+                    sqSum -= integralSqSum[(y1 - 1) * w + x2];
+                }
+                if (x1 > 0) {
+                    sum -= integralSum[y2 * w + (x1 - 1)];
+                    sqSum -= integralSqSum[y2 * w + (x1 - 1)];
+                }
+                if (x1 > 0 && y1 > 0) {
+                    sum += integralSum[(y1 - 1) * w + (x1 - 1)];
+                    sqSum += integralSqSum[(y1 - 1) * w + (x1 - 1)];
+                }
+
+                double mean = sum / count;
+                double variance = (sqSum / count) - (mean * mean);
+                double stdDev = std::sqrt(std::max(0.0, variance));
+
+                double threshold = mean * (1.0 + k * (stdDev / R - 1.0));
+
+                // Binarize
+                // Text is usually darker than background
+                // Pixel < Threshold => Text (Black/0)
+                // Pixel > Threshold => Background (White/255)
+                binData[y * w + x] = (gray[y * w + x] < threshold) ? 0 : 255;
+            }
+        }
+        
+        return ImageBuffer(binData, w, h, 1, true);
+    }
+
 }

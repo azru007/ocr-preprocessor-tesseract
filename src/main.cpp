@@ -144,8 +144,9 @@ int main(int argc, char** argv) {
         // This creates a rectilinear image of the text
         OCR::ImageBuffer warped = OCR::ImageWarp::Warp(inputImg, originalQ);
         
-        // 2. Binarize (Clean)
-        OCR::ImageBuffer bin = OCR::PostProcess::Binarize(warped);
+        // 2. Binarize (Clean) using Adaptive Thresholding (Sauvola)
+        // Window size 25, k=0.2 are good defaults for document images
+        OCR::ImageBuffer bin = OCR::PostProcess::AdaptiveBinarize(warped, 25, 0.2);
 
         // 3. Paste into White Canvas (Centering)
         // Determine top-left position to center the rect on the original quad center
@@ -161,18 +162,18 @@ int main(int argc, char** argv) {
                 // Boundary check
                 if (dstX >= 0 && dstX < w && dstY >= 0 && dstY < h) {
                     // Check if pixel is "Text" (Black/0)
-                    // Binarize returns 1 channel, 0 or 255.
-                    // Assuming 0 is black (text).
                     unsigned char val = bin.data[y * bin.w + x];
                     
                     if (val == 0) { // If Text
-                        int offset = (dstY * w + dstX) * 3;
-                        whiteData[offset] = 0;
-                        whiteData[offset+1] = 0;
-                        whiteData[offset+2] = 0;
+                        int dstOffset = (dstY * w + dstX) * 3;
+                        int srcOffset = (y * bin.w + x) * 3; // Warped is also RGB
+
+                        // Preserve original pixel quality!
+                        whiteData[dstOffset + 0] = warped.data[srcOffset + 0];
+                        whiteData[dstOffset + 1] = warped.data[srcOffset + 1];
+                        whiteData[dstOffset + 2] = warped.data[srcOffset + 2];
                     }
-                    // If White (255), we don't copy, treating as transparent to avoid
-                    // overwriting other potential text/background.
+                    // If Background (255), we leave the canvas white
                 }
             }
         }
