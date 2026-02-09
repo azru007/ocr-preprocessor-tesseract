@@ -151,8 +151,9 @@ int main(int argc, char** argv) {
         // Checks Center Row vs Edge Rows brightness
         OCR::ImageBuffer normalized = OCR::PostProcess::NormalizeBackground(warped);
         
-        // 2.2 Adaptive Binarize
-        OCR::ImageBuffer bin = OCR::PostProcess::AdaptiveBinarize(normalized, 25, 0.2);
+        // 2.2 Binarize (Otsu)
+        // Uses global thresholding (Plain Otsu as requested)
+        OCR::ImageBuffer bin = OCR::PostProcess::Binarize(normalized);
 
         // 3. Paste into White Canvas (Centering)
         // Determine top-left position to center the rect on the original quad center
@@ -172,12 +173,11 @@ int main(int argc, char** argv) {
                     
                     if (val == 0) { // If Text
                         int dstOffset = (dstY * w + dstX) * 3;
-                        int srcOffset = (y * bin.w + x) * 3; // Warped is also RGB
-
-                        // Preserve original pixel quality!
-                        whiteData[dstOffset + 0] = warped.data[srcOffset + 0];
-                        whiteData[dstOffset + 1] = warped.data[srcOffset + 1];
-                        whiteData[dstOffset + 2] = warped.data[srcOffset + 2];
+                        
+                        // Force Black Text
+                        whiteData[dstOffset + 0] = 0;
+                        whiteData[dstOffset + 1] = 0;
+                        whiteData[dstOffset + 2] = 0;
                     }
                     // If Background (255), we leave the canvas white
                 }

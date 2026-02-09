@@ -1,6 +1,0 @@
-Loaded image: 473x626
-Model loaded.
-Detection Map: 480x640
-Found 24 text regions.
-Saved masked image to: output/masked.png
-Done.
