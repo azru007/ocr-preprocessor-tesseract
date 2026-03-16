@@ -1,0 +1,14 @@
+%============================= abstract.tex================================
+\chapter*{Abstract}%
+%\addcontentsline{toc}{chapter}{\numberline{}Abstract}%
+\addcontentsline{toc}{chapter}{Abstract}%
+
+\par Optical Character Recognition (OCR) systems digitize physical text but their accuracy drops significantly under unstructured mobile environments due to skew, complex backgrounds, and uneven illumination. This project proposes an edge-computing architecture integrating a highly optimized C++ deep-learning preprocessor into a Java-based Android OCR application.
+\par The core engine utilizes DBNet (Differentiable Binarization Network) running over the ONNX framework natively in C++ to perform accurate text detection. Following detection, a custom geometric pipeline unwarps perspective distortions, and an adaptive Sauvola-based binarization algorithm prepares the regions for OCR execution. The Java Native Interface (JNI) seamlessly integrates this native engine into an Android UI, enabling users to toggle deep-learning preprocessing offline. Evaluated against typical document images, the proposed system demonstrates substantial text extraction improvements compared to standard OCR.
+%\begin{flushright}
+%	\textit{}
+%\end{flushright}
+
+\thispagestyle{plain}
+%=======================================================================
+

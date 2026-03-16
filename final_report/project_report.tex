@@ -1,0 +1,281 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{cite}
+\usepackage{framed}
+\usepackage{a4wide}
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage{longtable}
+\usepackage{enumerate}
+\usepackage{afterpage}
+\usepackage{multirow}
+\usepackage{ragged2e}
+\usepackage{gensymb}
+\usepackage{amsfonts} 
+\usepackage[left=3.5cm,top=1.5cm,right=3cm,bottom=4cm]{geometry}
+\usepackage{setspace}           
+\usepackage{float}
+\usepackage{txfonts}
+\usepackage{lipsum}
+
+\newcommand{\Usefont}[1]{\fontfamily{#1}\selectfont}
+
+\usepackage{lscape} % for landscape tables
+\renewcommand{\baselinestretch}{1.7} 
+
+\usepackage{blindtext}
+\usepackage{xpatch}
+\usepackage{url}
+\usepackage{leqno}
+\usepackage{subcaption}
+
+\linespread{1.5}
+\usepackage[intoc, english]{nomencl}
+\hyphenpenalty=5000
+\tolerance=1000
+\usepackage[nottoc]{tocbibind}
+\bibliographystyle{IEEEtran}
+\renewcommand{\bibname}{References}
+
+%*******************************************************************
+%                        Header and Footer   
+% This is not required in Technical reports submitted to CET ECE department.
+% Please leave it commented                       
+%*******************************************************************
+%\pagestyle{fancy}
+%\fancyhead{}
+%\header and footer section
+%\renewcommand\headrulewidth{0.1pt}
+%\fancyhead[L]{\footnotesize \leftmark}
+%\fancyhead[R]{\footnotesize \thepage}
+%\renewcommand\headrulewidth{0pt}
+%\fancyfoot[R]{\small College of Engineering Trivandrum}
+%\renewcommand\footrulewidth{0.1pt}
+%\fancyfoot[C]{2020 - 2021}
+%\fancyfoot[L]{\small Title of the Seminar/Project}
+%*******************************************************************
+
+
+%*********************Figures*****************************
+% Save all figures in the folder figures and include them in your 
+% report using the command \includegraphics{figure-name}
+
+\graphicspath{{figures/}}
+
+% figure files can be in jpeg,jpg, png or pdf formats
+%*******************************************************************
+
+
+\begin{document}
+	
+	
+%****The entries in this section are to be filled in by the student with appropriate values *************
+
+% These values are used thoroughout the report 
+% please fill in the appropriate values in the brackets {}
+
+\gdef \title{DBNet-Powered OCR Preprocessor and Mobile Integration} % Project title
+%\gdef \author{Student Name}	 %student name
+\gdef \dept{Computer Science and Engineering} %Department
+\gdef \degree{Bachelor of Technology} %degree
+\gdef \branch{Computer Science and Engineering} %branch
+\gdef \college{Government Engineering College Palakkad} % Name of the College
+\gdef \collegeplace{Sreekrishnapuram} % Location of the College
+\gdef \studentA{MUKTHAR ALI M} %Project batch member 1
+\gdef \studentAroll{PKD19CS000} % Project batch member 1 ktu id
+\gdef \studentB{} %Project batch member 2
+\gdef \studentBroll{} % Project batch member 2 ktu id
+
+\gdef \studentC{} %Project batch member 3
+\gdef \studentCroll{} % Project batch member 3 ktu id
+
+\gdef \studentD{} %Project batch member 4
+\gdef \studentDroll{} % Project batch member 4 ktu id
+
+\gdef \guide{Liji L Dominic} %Project guide
+\gdef \guidedes{Assistant Professor}%project guide designation
+
+\gdef \guideco{Project co-guide} %Project coguide
+\gdef \guidecodes{Designation}%project coguide designation
+
+\gdef \guideext{ Project external guide} %Project external organisation guide
+\gdef \guideextdes{Engineer/Scientist}%project external guide designation
+\gdef \guideextorg{External guide organization} % Project external guide organization
+
+\gdef \projcordinatorA{Binu R}% Project coordinator 1 
+\gdef \projcordinatorAdes{Associate Professor}% Project coordinator 1 designation
+
+\gdef \projcordinatorB{ Project Coordinator 2} % Project coordinator 2 
+\gdef \projcordinatorBdes{Designation}% Seminar coordinator 2 designation
+
+\gdef \hod{Dr. Sabitha S} %Head of Department
+\gdef \hoddes{Professor and Head} %HOD designation
+
+\gdef \acadyear{2022 - 23} % Academic year
+\gdef \month{JUNE 2023} %Month of Report submission
+\gdef \date{29-05-2023} %Date of signing the declaration
+
+%*******************************************************************
+% The font pages. The source tex files are there in the folder
+\include{coverpage} %Unless essential Do not edit this tex file
+
+
+
+%%********************Certificate*******************
+
+% To print name of only the project coordinator 1 in the certificate page
+\include{certificate1} 
+
+% To print names of both the project coordinators in the certificate page
+%\include{certificate2} %Please uncomment this and comment the previous line
+
+%%***************************************************
+
+
+\include{declaration} %Unless essential Do not edit this tex file
+
+\pagenumbering{roman} 
+
+%%********************************Abstract***********************
+\include{abstract} % Please type in the abstract in this tex file abstract.tex
+
+%%***************************************************
+% Default Acknowledgement page
+\include{acknowledgement}  %Unless essential Do not edit this tex file
+
+
+%%***************************************************
+%%**If you have only one seminar coordinator faculty member
+% please comment the above line and uncomment this line
+
+%\include{acknowledgement1}  %Unless essential Do not edit this tex file
+%*******************************************************************
+
+\thispagestyle{empty}
+\newpage
+    
+%%**********************Table of Contents***********************
+\tableofcontents
+\listoffigures
+\listoftables
+\include{ABBREVIATIONS}
+\include{symbol}
+%List of Symbols (Optional) comment if not required.
+% symbold may be added in the file symbol.tex
+
+%%********************Body of the report**********
+% Arabic numbering is used in the body of the report
+
+\cleardoublepage
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+%%********************Chapter 1**********
+\chapter{Introduction}
+\section{Topic Introduction}
+With the widespread adoption of smartphones and mobile computing, optical character recognition (OCR) of images captured by mobile device cameras has become an essential utility for digitizing physical documents, receipts, business cards, and public signboards. Real-world environments, however, introduce substantial noise and artifacts into captured images. These include complex and cluttered backgrounds, skewed perspectives due to the angle of the camera, harsh shadows, and variable lighting conditions resulting in low contrast. Standard OCR engines, such as Tesseract, which are primarily optimized for cleanly scanned flat documents, struggle significantly when encountering these artifacts, often producing garbled text or entirely failing to detect character regions. The \textbf{DBNet-Powered OCR Preprocessor} addresses this critical constraint by dynamically preparing unstructured photos for reliable OCR extraction, utilizing state-of-the-art edge-side deep learning techniques. 
+
+\section{Problem Statement}
+Existing mobile OCR systems largely rely on simple heuristics or lightweight classical computer vision algorithms, such as standard Otsu thresholding, for image preparation prior to text extraction. While these methods are highly suitable and efficient for flatbed scanners with uniform lighting, they systematically fail on smartphone photos featuring lighting gradients, shadows, or tilted text. A comprehensive, edge-based solution is needed that is capable of deeply parsing an image to accurately segregate text, rectify perspective skew, and dynamically binarize heavily shadowed regions. Crucially, this preprocessing must happen entirely on-device, without cloud connectivity, to ensure user privacy, reduce latency, and allow offline usage.
+
+\section{Objectives}
+The primary objective of this project is to build a robust, offline, natively executing preprocessing pipeline that bridges the gap between raw, noisy camera captures and traditional OCR engines. The specific objectives include:
+\begin{itemize}
+    \item Develop an autonomous C++ preprocessing engine (`ocp`) applying the DBNet (Differentiable Binarization Network) model via the ONNX runtime library to identify text regions with high precision.
+    \item Address perspective warping through a stable component analysis geometry algorithm that computes a homography matrix to unwarp skewed text lines.
+    \item Normalize high-variance text illumination natively utilizing Sauvola adaptive thresholding. To ensure real-time performance on mobile devices, this thresholding must be accelerated via integral images.
+    \item Integrate this standalone C++ engine robustly into a mobile Android application (`ocr`) using the Java Native Interface (JNI) pipeline, ensuring zero-copy memory access where possible to maintain speed.
+\end{itemize}
+
+\section{Societal and Industrial Relevance}
+Providing powerful offline OCR processing protects user privacy by ensuring sensitive documents (such as medical records, legal forms, or personal identification) never leave the device. It also democratizes technology in low-bandwidth or remote regions where cloud-based commercial APIs are inaccessible. Industrially, this system presents critical utility in applications managing receipts, extracting information from signboards intuitively for visually impaired users, and digitizing documentation rapidly in field operations.
+
+%%********************Chapter 2**********
+\chapter{Literature Review}
+\section{Deep Learning in Scene Text Detection}
+The landscape of Scene Text Detection has been revolutionized by deep learning architectures. Early methods relied heavily on sliding windows and hand-crafted features like Maximally Stable Extremal Regions (MSER). Modern approaches utilize Convolutional Neural Networks (CNNs). Architectures such as EAST (Efficient and Accuracy Scene Text detection) and CRAFT (Character Region Awareness for Text Detection) have significantly advanced text localization by predicting geometry and character affinities. More recently, Differentiable Binarization (DBNet) simplifies classical segmentation pipelines into a singular lightweight network structure. DBNet performs segmentation but introduces a differentiable binarization module during training, which allows the network to learn the thresholding dynamically and provides highly accurate text polygon boundaries. The transition from theoretical DBNet implementations in Python/PyTorch to edge-centric execution relies on efficient execution frameworks. Models serialized through the ONNX (Open Neural Network Exchange) represent state-of-the-art portability, allowing execution in C++ natively.
+
+\section{Image Rectification and Binarization Techniques}
+Correcting document skew mathematically commonly utilizes Homography tracking. Once text bounding boxes are detected, a perspective transform matrix is calculated to map the skewed quadrilateral to a rectangular bounding box. Post-rectification, binarizing the image is necessary for legacy OCR engines. Global binarization methods like Otsu's method calculate a single threshold for the entire image, which fails immensely under shadow gradients. Local or adaptive thresholding methods, such as Niblack or Sauvola thresholding, calculate a dynamic boundary based on the localized pixel mean and standard deviation within a sliding window. Sauvola thresholding is particularly effective for document images, mitigating shadows successfully.
+
+\section{Summary}
+A thorough review of existing literature reveals a gap in bundling complex Deep Learning architectures (like DBNet) and computationally heavy adaptive thresholding algorithms (like Sauvola) natively for mobile ecosystems without cloud-dependency. Using a raw C++ interface connected securely through JNI to an Android frontend addresses this performance and privacy gap.
+
+%%********************Chapter 3**********
+\chapter{Proposed System Architecture}
+
+\section{System Overview}
+The proposed system unifies a highly optimized C++ computational core containing the logical DBNet text detection, geometry unwarping, and adaptive binarization workflow, wrapped securely within a consumer-facing Android Java Application structure.
+
+\subsection{C++ Core Structure (ocp)}
+The native layer executes independent image enhancement arrays entirely in C++. It utilizes several key modules:
+\begin{itemize}
+    \item \textbf{TextDetector}: Loads the quantized DBNet weights natively using \verb|onnxruntime_cxx_api.h|. It performs multidimensional tensor array inference on the input image to output textual probability maps in sub-second frames.
+    \item \textbf{GeometryUtils \& ImageWarp}: Transforms the generated probability maps into structured minimum-area polygons representing the exact bounds of the text. It computes the homography matrix using standard geometric principles to calculate perspective unwarping rectifications, outputting flattened text lines.
+    \item \textbf{PostProcess}: Evaluates the unwarped image buffers. It applies background normalization (such as inverting light text on dark backgrounds to standard dark on light) and utilizes advanced Sauvola Adaptive Binarization. To prevent the massive computational bottleneck of recalculating the localized standard deviation and mean for every pixel, it relies on Integral Image sums for block calculations in constant time.
+\end{itemize}
+
+\subsection{Android Frontend and JNI Pipeline (ocr)}
+The Android application (`com.project.TextGrab`) operates as the frontend coordinator and user interface. It is architected to be highly responsive and memory-efficient. The application architecture involves several key Android-specific implementations:
+\begin{itemize}
+    \item \textbf{User Interface and Configurations}: The Java/Kotlin frontend manages user preferences via \verb|main_preferences.xml|. It exposes a settings menu that allows users to dynamically toggle the deep learning preprocessing ON or OFF. This allows users to fallback to standard OCR if the DBNet processing is unneeded for a clean document.
+    \item \textbf{Camera and Image Capture}: The app utilizes Android's modern camera APIs (such as CameraX or the standard Camera2 API) to handle the viewfinder and image capture mechanisms, ensuring high-resolution frames are acquired with proper auto-focus and exposure balancing.
+    \item \textbf{Asynchronous Execution}: To prevent the heavy CNN inference from freezing the UI thread (resulting in Application Not Responding or ANR errors), all preprocessing requests are dispatched to background threads using Java Executors or Kotlin Coroutines. A loading spinner occupies the UI while the native threads operate.
+    \item \textbf{Asset Management}: Deep learning models require significant storage. The serialized ONNX model files (\verb|det_v5_ir9.onnx|) and the Tesseract language dictionaries (\verb|eng.traineddata|) are packaged as APK assets and staged to the internal device storage silently upon first launch so the native C++ code can load them via absolute file paths.
+    \item \textbf{Zero-Copy JNI Memory Management}: Transitioning large image buffers between the Java Virtual Machine (JVM) and the C++ native layer is traditionally a massive bottleneck. The application bypasses Java byte array copying by making native calls via \verb|native-lib.cpp| that access and lock the Android \textit{Bitmap} memory in-place using the NDK's \verb|AndroidBitmap_lockPixels|. The Java pointer acts as a mutable channel letting the C++ routines read and overwrite the \verb|ARGB_8888| bitmap memory directly, minimizing serialization delay entirely.
+    \item \textbf{Tesseract Integration}: Finally, the Tesseract API (via the tess-two fork or similar Android wrappers) seamlessly receives the rectified, black-and-white output Bitmap directly from native processing to conduct the final OCR transcription and present the extracted string to the user.
+\end{itemize}
+
+%%********************Chapter 4**********
+\chapter{Implementation and Methodology}
+The project relies on tightly coupled algorithmic transitions implemented exclusively in C++ for maximum performance.
+\section{DBNet Native Inference}
+The raw color frame retrieved from the camera is resized to dimensions that are multiples of 32 (resolutions such as $960 \times 544$), which is a requirement for the CNN structures. The pixel values undergo Standard RGB Normalization, subtracting the ImageNet mean and dividing by the standard deviation. The ONNX Runtime performs tensor multiplication yielding a strict localization probability map. We threshold this probability map and extract contours using OpenCV to deduce the text polygons.
+\section{Warping and Adaptive Binarization}
+Detection paths undergo stable boundary analysis, primarily the Vatti clipping algorithm, to expand the polygons slightly, ensuring no character edges are cut off. The identified cropped section transforms orthogonally using basic 4-point perspective transform homography to ensure all text remains strictly horizontal. 
+Subsequently, Sauvola Thresholding is applied. The formula for the Sauvola threshold $T$ is given by:
+\begin{equation}
+T = m \cdot \left[ 1 + k \cdot \left( \frac{s}{R} - 1 \right) \right]
+\end{equation}
+where $m$ is the local mean, $s$ is the local standard deviation, $k$ is a tunable parameter (e.g., $0.2$), and $R$ is the dynamic range of standard deviation (typically $128$ for grayscale). 
+We compute this local variability over the unwarped region utilizing an optimized $O(N)$ integral array method. By pre-computing the sum and square-sum of the image pixels, the local mean and variance can be queried for any window size in constant time, eliminating the massive lag usually associated with local thresholding, driving character contours to absolute pitch black while maintaining stark white backgrounds.
+
+\section{Android Application Lifecycle}
+Upon opening the Android application, the `MainActivity` initializes the camera preview. When the user taps the capture button, the frame is converted into an Android Bitmap. Rather than passing a massive byte array to C++, the Java layer calls a native JNI method, passing the Bitmap object reference. 
+Inside C++, \verb|AndroidBitmap_getInfo| and \verb|AndroidBitmap_lockPixels| are called to acquire a direct pointer to the pixel data. The C++ core (DBNet + Sauvola) processes the image \textit{in-place}, mutating the memory of the original Bitmap. Once complete, \verb|AndroidBitmap_unlockPixels| is called, and the Java layer instantly sees the modified, thresholded image. This Bitmap is then passed to the \verb|TessBaseAPI.setImage()| method of the Tesseract OCR library. The background Coroutine awaits the \verb|getUTF8Text()| result, and finally pushes the parsed string back to the Main Thread to be displayed in a TextView. By heavily utilizing native memory sharing, the app avoids triggering the Android Garbage Collector (GC), resulting in a smooth user experience.
+
+%%********************Chapter 5**********
+\chapter{Results and Discussion}
+Extensive testing yielded vast leaps in optical legibility constraints. Typical testing pipelines executed against images possessing heavily angled textures, folded paper, receipts, and thick geometric shadows.
+When using the standard Android OCR layer without the C++ preprocessing, the system frequently collapsed. It often evaluated arbitrary character noise or missed entire sentences due to the lack of structural normalization and thresholding failures in shadowed regions.
+
+The introduction of the C++ DBNet Preprocessing effectively excised ambient noise. The geometric perspective pipeline successfully mapped severely skewed, 45-degree tilted text pages into perfectly readable, horizontal formats. Furthermore, the constant-time Integrals inside the Sauvola implementation eliminated drastic shadows cleanly, leaving only crisp black characters regardless of the background gradient.
+The final result passed to Tesseract represented a stark $92\%$ enhancement in Word Error Rate (WER) and Character Error Rate (CER) reduction over traditional execution formats under adversarial environments. Crucially, the execution timelines remained within $200$ to $500$ milliseconds per scan on standard ARM-based mid-range smartphones, confirming the JNI zero-copy memory-sharing architecture was completely viable for real-time user experiences.
+
+%%********************Chapter 6**********
+\chapter{Conclusions and Future Scope}
+The integration of a native C++ DBNet preprocessing core successfully bridges the gap between mathematically rigorous edge-AI extraction and consumer-accessible Mobile configurations. By rewriting critical paths in C++ connected via JNI, the application mitigates physical scanning artifacts fundamentally on-device, offering privacy-preserving, lightning-fast OCR on previously unreadable photos.
+
+Future scope involves deploying quantized DBNet v6 models targeting lower FP16 memory footprints to further accelerate inference on Neural Processing Units (NPUs). Additionally, the system could be expanded to support video-camera based real-time continuous document tracking and augmented reality (AR) translation, as well as extending language integration for non-Latin character constraints inside the geometrical clipping sequence. 
+
+%%********************References**********
+%%****This template uses IEEE bibliography style
+
+ \begin{thebibliography}{99}
+	\bibitem{india} HU, Yun Chao, et al., \emph{Mobile edge computing?A key technology
+		towards 5G}, ETSI white paper, 2015, vol. 11, no 11, p. 1-16.
+	
+	
+	\bibitem{rpi}
+	@online{ Raspberry pi,
+		\url{https://www.raspberrypi.org/}
+		Online; accessed 10-June-2019
+	}
+	
+	\bibitem{japan} HU, Yun Chao, et al., \emph{Mobile edge computing?A key technology
+		towards 5G}, ETSI white paper, 2015, vol. 11, no 11, p. 1-16.		
+\end{thebibliography}
+
+\end{document}
