@@ -1,10 +1,37 @@
-512
-CHAPTER 8. CODE GENERATION
-the problem by generating code for the three-address statements in the order in which they have been produced by the intermediate code generator. In Chapter 10, we shall study code scheduling for pipelined machines that can execute several operations in a single clock cycle.
-8.2 The Target Language
-Familiarity with the target machine and its instruction set is a prerequisite for designing a good code generator. Unfortunately, in a general discussion of code generation it is not possible to describe any target machine in sufficient detail to generate good code for a complete language on that machine. In this chapter, we shall use as a target language assembly code for a simple computer that is representative of many register machines. However, the code generation techniques presented in this chapter can be used on many other classes of machines as well.
-8.2.1 A Simple Target Machine Model
-Our target computer models a three-address machine with load and store oper-ations, computation operations, jump operations, and conditional jumps. The underlying computer is a byte-addressable machine with n general-purpose reg-isters, RO, R1,..., Rn 1. A full-fledged assembly language would have scores of instructions. To avoid hiding the concepts in a myriad of details, we shall use a very limited set of instructions and assume that all operands are integers. Most instructions consists of an operator, followed by a target, followed by a list of source operands. A label may precede an instruction. We assume the following kinds of instructions are available:
-Load operations: The instruction LD dst, addr loads the value in location addr into location dst. This instruction denotes the assignment dst = addr. The most common form of this instruction is LD r, z which loads the value in location z into register r. An instruction of the form LD 71, 72 is a register-to-register copy in which the contents of register 72 are copied into register r1.
-Store operations: The instruction ST z,r stores the value in register r into the location z. This instruction denotes the assignment = r.
-Computation operations of the form OP dst, src₁, srce, where OP is a op-erator like ADD or SUB, and dst, sre, and sre₂ are locations, not necessarily distinct. The effect of this machine instruction is to apply the operation represented by OP to the values in locations sre, and sre₂, and place the result of this operation in location dst. For example, SUB 71, 72, 73 com-putes r r3. Any value formerly stored in ri is lost, but if ry is r2 or r3, the old value is read first. Unary operators that take only one operand do not have a srca. = 72
+“We always observe the Tradition. The Tradition saved Egypt from
+famine in those days, and made the Egyptians the wealthiest of
+peoples. The Tradition teaches men how to cross the desert, and
+how their children should marry. The Tradition says that an oasis is
+neutral territory, because both sides have oases, and so both are
+vulnerable.”
+No one said a word as the old man continued.
+“But the Tradition also says that we should believe the messages
+of the desert. Everything we know was taught to us by the desert.”
+The old man gave a signal, and everyone stood. The meeting was
+over. The hookahs were extinguished, and the guards stood at
+attention. The boy made ready to leave, but the old man spoke
+again:
+“Tomorrow, we are going to break the agreement that says that no
+one at the oasis may carry arms. Throughout the entire day we will
+be on the lookout for our enemies. When the sun sets, the men will
+once again surrender their arms to me. For every ten dead men
+among our enemies, you will receive a piece of gold.
+“But arms cannot be drawn unless they also go into battle. Arms
+are as capricious as the desert, and, if they are not used, the next
+time they might not function. If at least one of them hasn’t been used
+by the end of the day tomorrow, one will be used on you.”
+When the boy left the tent, the oasis was illuminated only by the
+light of the full moon. He was twenty minutes from his tent, and
+began to make his way there.
+He was alarmed by what had happened. He had succeeded in
+reaching through to the Soul of the World, and now the price for
+having done so might be his life. It was a frightening bet. But he had
+been making risky bets ever since the day he had sold his sheep to
+pursue his Personal Legend. And, as the camel driver had said, to
+die tomorrow was no worse than dying on any other day. Every day
+was there to be lived or to mark one’s departure from this world.
+Everything depended on one word: “Maktub.”
+Walking along in the silence, he had no regrets. If he died
+tomorrow, it would be because God was not willing to change the
+future. He would at least have died after having crossed the strait,
+after having worked in a crystal shop, and after having known the
