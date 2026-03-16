@@ -4,7 +4,6 @@
 #include <fstream>
 #include <algorithm> // for min/max
 #include <cmath>     // for floor/ceil
-#include <cstring>   // for memset
 
 // Define STB_IMAGE_IMPLEMENTATION here
 #define STB_IMAGE_IMPLEMENTATION
@@ -30,10 +29,11 @@ bool FileExists(const std::string& name) {
 #include <filesystem>
 namespace fs = std::filesystem;
 
-void EnsureOutputDirectory(const std::string& path) {
-    if (!fs::exists(path)) {
-        fs::create_directories(path);
+void PrepareOutputDirectory(const std::string& path) {
+    if (fs::exists(path)) {
+        fs::remove_all(path); // Clean existing
     }
+    fs::create_directories(path);
 }
 
 // Helper: Point in Polygon (Ray Raycasting)
@@ -51,21 +51,12 @@ bool IsPointInQuad(double x, double y, const OCR::Quad& q) {
 
 int main(int argc, char** argv) {
     if (argc < 2) {
-        std::cerr << "Usage: ocr_preprocessor <image_path_or_dir> [model_path]" << std::endl;
+        std::cerr << "Usage: ocr_preprocessor <image_path> [model_path]" << std::endl;
         return 1;
     }
 
-    std::string inputPath = argv[1];
+    std::string imagePath = argv[1];
     std::string modelPath = (argc > 2) ? argv[2] : "det_v5.onnx";
-    
-    // User preference for comparison
-    bool runComparison = false;
-    std::cout << "Run OCR comparison (Tesseract vs PaddleOCR)? [y/N]: ";
-    std::string choice;
-    std::getline(std::cin, choice);
-    if (choice == "y" || choice == "Y" || choice == "yes") {
-        runComparison = true;
-    }
     
 #ifdef OCR_OUTPUT_DIR
     std::string outDir = OCR_OUTPUT_DIR;
@@ -73,14 +64,26 @@ int main(int argc, char** argv) {
     std::string outDir = "output";
 #endif
 
-    if (!fs::exists(inputPath)) {
-        std::cerr << "Error: Input path not found: " << inputPath << std::endl;
+    if (!FileExists(imagePath)) {
+        std::cerr << "Error: Image not found: " << imagePath << std::endl;
         return 1;
     }
     if (!FileExists(modelPath)) {
         std::cerr << "Error: Model not found: " << modelPath << std::endl;
         return 1;
     }
+
+    // 1. Load Image
+    int w, h, c;
+    unsigned char* data = stbi_load(imagePath.c_str(), &w, &h, &c, 3); // Force 3 channels
+    if (!data) {
+        std::cerr << "Failed to load image." << std::endl;
+        return 1;
+    }
+    
+    // Wrap in RAII
+    OCR::ImageBuffer inputImg(data, w, h, 3, true); // true = own it (will free)
+    std::cout << "Loaded image: " << w << "x" << h << std::endl;
 
     // 2. Initialize Detector
     OCR::TextDetector detector;
@@ -90,109 +93,107 @@ int main(int argc, char** argv) {
     }
     std::cout << "Model loaded." << std::endl;
 
-    EnsureOutputDirectory(outDir);
-
-    std::vector<fs::path> images;
-    if (fs::is_directory(inputPath)) {
-        for (const auto& entry : fs::directory_iterator(inputPath)) {
-            auto ext = entry.path().extension().string();
-            // Simple extension check
-            if (ext == ".jpg" || ext == ".png" || ext == ".jpeg" || ext == ".bmp") {
-                images.push_back(entry.path());
-            }
-        }
-    } else {
-        images.push_back(inputPath);
+    // 3. Detect
+    int mapW, mapH;
+    auto map = detector.Detect(inputImg, mapW, mapH);
+    if (map.empty()) {
+        std::cerr << "Detection failed or empty result." << std::endl;
+        return 1;
     }
+    std::cout << "Detection Map: " << mapW << "x" << mapH << std::endl;
 
-    for (const auto& imgPath : images) {
-        std::cout << "Processing: " << imgPath.filename().string() << std::endl;
+    // 4. Group Regions (Geometry)    
+    float scaleX = (float)mapW / (float)w;
+    float scaleY = (float)mapH / (float)h;
+    
+    // Use Stable Component Analysis
+    auto quads = OCR::GeometryUtils::FindStableTextRegions(map, mapW, mapH, 0.3f);
+    std::cout << "Found " << quads.size() << " text regions after stable merging." << std::endl;
+
+    // 5. Create Masked Output
+    // Prepare output directory (clean & create)
+    PrepareOutputDirectory(outDir);
+
+    // Create a white canvas
+    size_t imgSize = (size_t)w * h * 3;
+    unsigned char* whiteData = (unsigned char*)malloc(imgSize);
+    if (!whiteData) {
+        std::cerr << "Failed to allocate memory for output image." << std::endl;
+        return 1;
+    }
+    memset(whiteData, 255, imgSize); // Fill with white
+    
+    // Process each quad
+    for (const auto& q : quads) {
+        // Scale Quad back to original
+        OCR::Quad originalQ;
         
-        // 1. Load Image
-        int w, h, c;
-        unsigned char* data = stbi_load(imgPath.string().c_str(), &w, &h, &c, 3);
-        if (!data) {
-            std::cerr << "Failed to load image: " << imgPath << std::endl;
-            continue;
+        // Compute center for placement
+        double centerX = 0, centerY = 0;
+        
+        for (int i=0; i<4; ++i) {
+            originalQ.p[i].x = q.p[i].x / scaleX;
+            originalQ.p[i].y = q.p[i].y / scaleY;
+            centerX += originalQ.p[i].x;
+            centerY += originalQ.p[i].y;
         }
+        centerX /= 4.0;
+        centerY /= 4.0;
+
+        // 1. Warp (Dewarp/Deskew)
+        // This creates a rectilinear image of the text
+        OCR::ImageBuffer warped = OCR::ImageWarp::Warp(inputImg, originalQ);
         
-        OCR::ImageBuffer inputImg(data, w, h, 3, true);
+        // 2. Binarize (Clean) using Adaptive Thresholding (Sauvola)
+        // Window size 25, k=0.2 are good defaults for document images
         
-        // 3. Detect
-        int mapW, mapH;
-        auto map = detector.Detect(inputImg, mapW, mapH);
-        if (map.empty()) {
-            std::cerr << "Detection failed for: " << imgPath << std::endl;
-            continue;
-        }
-
-        // 4. Group Regions
-        float scaleX = (float)mapW / (float)w;
-        float scaleY = (float)mapH / (float)h;
-        auto quads = OCR::GeometryUtils::FindStableTextRegions(map, mapW, mapH, 0.3f);
-
-        // Create a white canvas
-        size_t imgSize = (size_t)w * h * 3;
-        unsigned char* whiteData = (unsigned char*)malloc(imgSize);
-        if (!whiteData) continue;
-        memset(whiteData, 255, imgSize);
+        // 2.1 Normalize Background (Flip if dark background)
+        // Checks Center Row vs Edge Rows brightness
+        OCR::ImageBuffer normalized = OCR::PostProcess::NormalizeBackground(warped);
         
-        for (const auto& q : quads) {
-            OCR::Quad originalQ;
-            double centerX = 0, centerY = 0;
-            for (int i=0; i<4; ++i) {
-                originalQ.p[i].x = q.p[i].x / scaleX;
-                originalQ.p[i].y = q.p[i].y / scaleY;
-                centerX += originalQ.p[i].x;
-                centerY += originalQ.p[i].y;
-            }
-            centerX /= 4.0;
-            centerY /= 4.0;
+        // 2.2 Binarize (Otsu)
+        // Uses global thresholding (Plain Otsu as requested)
+        OCR::ImageBuffer bin = OCR::PostProcess::Binarize(normalized);
 
-            OCR::ImageBuffer warped = OCR::ImageWarp::Warp(inputImg, originalQ);
-            OCR::ImageBuffer normalized = OCR::PostProcess::NormalizeBackground(warped);
-            // Sauvola adaptive binarization: per-pixel threshold from local mean+stddev.
-            // Using a larger window (81) for high-res images to cover 1-2 characters.
-            // k=0.18 keeps characters thicker for better OCR.
-            OCR::ImageBuffer bin = OCR::PostProcess::AdaptiveBinarize(normalized, 81, 0.18, 128.0);
+        // 3. Paste into White Canvas (Centering)
+        // Determine top-left position to center the rect on the original quad center
+        int pasteX = (int)(centerX - bin.w / 2.0);
+        int pasteY = (int)(centerY - bin.h / 2.0);
 
-            int pasteX = (int)(originalQ.p[0].x);
-            int pasteY = (int)(originalQ.p[0].y);
+        for (int y = 0; y < bin.h; ++y) {
+            for (int x = 0; x < bin.w; ++x) {
+                // Calculate target position
+                int dstX = pasteX + x;
+                int dstY = pasteY + y;
 
-            for (int y = 0; y < bin.h; ++y) {
-                for (int x = 0; x < bin.w; ++x) {
-                    int dstX = pasteX + x;
-                    int dstY = pasteY + y;
-                    if (dstX >= 0 && dstX < w && dstY >= 0 && dstY < h) {
-                        if (bin.data[y * bin.w + x] == 0) {
-                            int offset = (dstY * w + dstX) * 3;
-                            whiteData[offset + 0] = 0;
-                            whiteData[offset + 1] = 0;
-                            whiteData[offset + 2] = 0;
-                        }
+                // Boundary check
+                if (dstX >= 0 && dstX < w && dstY >= 0 && dstY < h) {
+                    // Check if pixel is "Text" (Black/0)
+                    unsigned char val = bin.data[y * bin.w + x];
+                    
+                    if (val == 0) { // If Text
+                        int dstOffset = (dstY * w + dstX) * 3;
+                        
+                        // Force Black Text
+                        whiteData[dstOffset + 0] = 0;
+                        whiteData[dstOffset + 1] = 0;
+                        whiteData[dstOffset + 2] = 0;
                     }
+                    // If Background (255), we leave the canvas white
                 }
             }
         }
-
-        std::string baseName = imgPath.stem().string();
-        std::string outName = outDir + "/" + baseName + "_masked.png";
-        OCR::ImageBuffer outputImg(whiteData, w, h, 3, true);
-        OCR::PostProcess::SaveImage(outputImg, outName);
-
-        if (runComparison) {
-            // Tesseract on Processed
-            std::string cmd1 = "tesseract " + outName + " " + outDir + "/" + baseName + "_tesseract_ours -l eng+mal --psm 6 2>/dev/null";
-            system(cmd1.c_str());
-
-            // Tesseract on Original
-            std::string cmd2 = "tesseract " + imgPath.string() + " " + outDir + "/" + baseName + "_tesseract_original -l eng+mal --psm 3 2>/dev/null";
-            system(cmd2.c_str());
-
-            // PaddleOCR on Original
-            std::string cmd3 = "export PATH=\"$PATH:/home/linux/.local/bin\" && paddleocr ocr -i " + imgPath.string() + " --use_angle_cls true --lang ml > " + outDir + "/" + baseName + "_paddleocr.txt 2>/dev/null";
-            system(cmd3.c_str());
-        }
     }
+
+    // Save the result
+    OCR::ImageBuffer outputImg(whiteData, w, h, 3, true); // true = own it
+    std::string outName = outDir + "/masked.png";
+    if (OCR::PostProcess::SaveImage(outputImg, outName)) {
+        std::cout << "Saved masked image to: " << outName << std::endl;
+    } else {
+        std::cerr << "Failed to save image." << std::endl;
+    }
+
+    std::cout << "Done." << std::endl;
     return 0;
 }

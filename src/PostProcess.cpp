@@ -7,9 +7,6 @@
 
 namespace OCR {
 
-    // Forward declaration — defined later in this file.
-    static void GaussianBlur3x3(std::vector<unsigned char>& gray, int w, int h);
-
     int PostProcess::GetOtsuThreshold(const std::vector<unsigned char>& grayPixels) {
         if (grayPixels.empty()) return 0;
         
@@ -107,11 +104,6 @@ namespace OCR {
             for (int i = 0; i < w * h; ++i) gray[i] = src.data[i * c];
         }
 
-        // 1.5 Suppress noise before computing local statistics.
-        // A 3x3 Gaussian removes JPEG artifacts and warp-aliasing so that
-        // individual noisy pixels don't skew the Sauvola mean/stddev window.
-        GaussianBlur3x3(gray, w, h);
-
         // 2. Integral Images (Sum and Sum of Squares)
         // Using double to prevent overflow
         std::vector<double> integralSum(w * h, 0.0);
@@ -169,19 +161,12 @@ namespace OCR {
                 double variance = (sqSum / count) - (mean * mean);
                 double stdDev = std::sqrt(std::max(0.0, variance));
 
-                // Sauvola's thresholding method
-                // R is typically 128 for 8-bit images.
-                // If stdDev is very low, it's likely a flat background area.
-                // We force it to white (background) to avoid noise specks.
-                double threshold;
-                if (stdDev < 2.0) {
-                    threshold = -1.0;
-                } else {
-                    threshold = mean * (1.0 + k * (stdDev / R - 1.0));
-                }
+                double threshold = mean * (1.0 + k * (stdDev / R - 1.0));
 
                 // Binarize
+                // Text is usually darker than background
                 // Pixel < Threshold => Text (Black/0)
+                // Pixel > Threshold => Background (White/255)
                 binData[y * w + x] = (gray[y * w + x] < threshold) ? 0 : 255;
             }
         }
@@ -189,82 +174,58 @@ namespace OCR {
         return ImageBuffer(binData, w, h, 1, true);
     }
 
-    // Fast 3x3 Gaussian blur (in-place on a gray vector).
-    // Kernel: [1 2 1 / 2 4 2 / 1 2 1] / 16
-    // Used to suppress noise before thresholding.
-    static void GaussianBlur3x3(std::vector<unsigned char>& gray, int w, int h) {
-        std::vector<unsigned char> tmp(gray.size());
-        for (int y = 0; y < h; ++y) {
-            for (int x = 0; x < w; ++x) {
-                // Clamp-to-edge for border pixels
-                auto g = [&](int px, int py) -> int {
-                    px = std::max(0, std::min(px, w - 1));
-                    py = std::max(0, std::min(py, h - 1));
-                    return gray[py * w + px];
-                };
-                int v = g(x-1,y-1)*1 + g(x,y-1)*2 + g(x+1,y-1)*1
-                      + g(x-1,y  )*2 + g(x,y  )*4 + g(x+1,y  )*2
-                      + g(x-1,y+1)*1 + g(x,y+1)*2 + g(x+1,y+1)*1;
-                tmp[y * w + x] = (unsigned char)(v / 16);
-            }
-        }
-        gray = tmp;
-    }
-
-
     ImageBuffer PostProcess::NormalizeBackground(const ImageBuffer& src) {
         int w = src.w;
         int h = src.h;
         int c = src.channels;
-
-        // If the image is too small to split into bands, just copy.
-        if (h < 5) {
-            size_t size = (size_t)w * h * c;
-            unsigned char* cp = (unsigned char*)malloc(size);
-            memcpy(cp, src.data, size);
-            return ImageBuffer(cp, w, h, c, true);
-        }
-
-        // Average luminance over a horizontal pixel band [y0, y1).
-        // More robust than a single row — a single row can land in blank space.
-        auto bandAvg = [&](int y0, int y1) -> double {
-            y0 = std::max(0, y0);
-            y1 = std::min(h, y1);
+        
+        if (h < 3) return ImageBuffer(src.data, w, h, c, false); // Too small to process, return shallow copy/original logic handled by caller? 
+        // Actually we need to return a new buffer because ImageBuffer owns its data by default in our usage pattern
+        // Or we can just copy it.
+        
+        // Helper to get row average luminance
+        auto getRowAvg = [&](int y) -> double {
             double sum = 0;
-            int count = 0;
-            for (int y = y0; y < y1; ++y) {
-                for (int x = 0; x < w; ++x) {
-                    int idx = (y * w + x) * c;
-                    double lum;
-                    if (c >= 3)
-                        lum = 0.299 * src.data[idx] + 0.587 * src.data[idx+1] + 0.114 * src.data[idx+2];
-                    else
-                        lum = src.data[idx];
-                    sum += lum;
-                    ++count;
+            for (int x = 0; x < w; ++x) {
+                unsigned char grayVal;
+                int idx = (y * w + x) * c;
+                if (c >= 3) {
+                     unsigned char r = src.data[idx];
+                     unsigned char g = src.data[idx + 1];
+                     unsigned char b = src.data[idx + 2];
+                     grayVal = (unsigned char)(0.299f * r + 0.587f * g + 0.114f * b);
+                } else {
+                     grayVal = src.data[idx];
                 }
+                sum += grayVal;
             }
-            return count > 0 ? sum / count : 0.0;
+            return sum / w;
         };
 
-        // Compare top+bottom 20% (background border) vs middle 60% (text content).
-        int fifth = std::max(1, h / 5);
-        double edgeAvg   = (bandAvg(0, fifth) + bandAvg(h - fifth, h)) / 2.0;
-        double centerAvg = bandAvg(fifth, h - fifth);
+        // Center Row
+        double centerAvg = getRowAvg(h / 2);
+        
+        // Edge Rows (Top and Bottom)
+        double edgeAvg = (getRowAvg(0) + getRowAvg(h - 1)) / 2.0;
 
-        // If content (center) is brighter than background (border) by more than 5,
-        // it is light-on-dark => invert to get dark-on-light for OCR.
-        // The +5 dead-zone prevents flipping nearly-uniform patches.
-        bool needInvert = (centerAvg > edgeAvg + 5.0);
-
+        // Logic: 
+        // If Center (Text) is Lighter (> value) than Edge (Background), 
+        // it means we have Light Text on Dark Background.
+        // We want Dark Text on Light Background.
+        // So we should INVERT.
+        
+        bool needInvert = (centerAvg > edgeAvg);
+        
+        // Create new buffer
         size_t size = (size_t)w * h * c;
         unsigned char* newData = (unsigned char*)malloc(size);
-
+        
         if (needInvert) {
-            for (size_t i = 0; i < size; ++i)
+             for (size_t i = 0; i < size; ++i) {
                 newData[i] = 255 - src.data[i];
+            }
         } else {
-            memcpy(newData, src.data, size);
+             memcpy(newData, src.data, size);
         }
 
         return ImageBuffer(newData, w, h, c, true);

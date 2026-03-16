@@ -33,10 +33,8 @@ namespace OCR {
     bool TextDetector::LoadModel(const std::string& modelPath) {
         try {
             Ort::SessionOptions sessionOptions;
-            // 0 = let ORT auto-select thread count (uses all logical CPU cores)
-            sessionOptions.SetIntraOpNumThreads(0);
-            // Enable all optimizations: constant folding, node fusion, memory planning
-            sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
+            sessionOptions.SetIntraOpNumThreads(1);
+            sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_BASIC);
 
             // Accessing internal pointer for move assignment is tricky with wrappers, 
             // but we can just construct a new session.
@@ -112,9 +110,8 @@ namespace OCR {
         int resizeW = img.w;
         int resizeH = img.h;
         
-        // Raised from 960 to 1280: allows small/dense text to survive downscaling
-        // without being lost. CPU inference is still fast with multi-threading above.
-        const int limit = 1280;
+        // Simple logic: limit max side to 960 (example) and align to 32
+        const int limit = 960;
         float ratio = 1.0f;
         if (std::max(resizeW, resizeH) > limit) {
              if (resizeW > resizeH) ratio = (float)limit / resizeW;

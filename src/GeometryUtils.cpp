@@ -40,31 +40,10 @@ namespace OCR {
     }
 
     std::vector<Quad> GeometryUtils::GetQuadsFromMap(const std::vector<float>& map, int w, int h, float threshold, float unclipRatio) {
-        // Smooth the probability map with a fast 3x3 box blur before thresholding.
-        // This reduces edge noise in the DB-Net output and produces cleaner,
-        // more connected blobs → better minimum area rectangles.
-        std::vector<float> smoothMap(map.size(), 0.0f);
-        for (int y = 0; y < h; ++y) {
-            for (int x = 0; x < w; ++x) {
-                float sum = 0.0f;
-                int count = 0;
-                for (int dy = -1; dy <= 1; ++dy) {
-                    for (int dx = -1; dx <= 1; ++dx) {
-                        int nx = x + dx, ny = y + dy;
-                        if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
-                            sum += map[ny * w + nx];
-                            ++count;
-                        }
-                    }
-                }
-                smoothMap[y * w + x] = sum / count;
-            }
-        }
-
-        // 1. Threshold (on smoothed map)
+        // 1. Threshold
         std::vector<unsigned char> bitMap(w * h, 0);
-        for (size_t i = 0; i < smoothMap.size(); ++i) {
-            if (smoothMap[i] > threshold) bitMap[i] = 255;
+        for (size_t i = 0; i < map.size(); ++i) {
+            if (map[i] > threshold) bitMap[i] = 255;
         }
 
         // 2. Find Blobs
@@ -143,29 +122,10 @@ namespace OCR {
     std::vector<Quad> GeometryUtils::FindStableTextRegions(const std::vector<float>& map, int w, int h, float threshold) {
         // Simplified Logic: Standard Expansion and Merge (UnclipRatio = 1.5)
         
-        // Smooth the probability map with a fast 3x3 box blur before thresholding.
-        std::vector<float> smoothMap2(map.size(), 0.0f);
-        for (int y = 0; y < h; ++y) {
-            for (int x = 0; x < w; ++x) {
-                float sum = 0.0f;
-                int count = 0;
-                for (int dy = -1; dy <= 1; ++dy) {
-                    for (int dx = -1; dx <= 1; ++dx) {
-                        int nx = x + dx, ny = y + dy;
-                        if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
-                            sum += map[ny * w + nx];
-                            ++count;
-                        }
-                    }
-                }
-                smoothMap2[y * w + x] = sum / count;
-            }
-        }
-
-        // 1. Threshold & Find Blobs (on smoothed map)
+        // 1. Threshold & Find Blobs
         std::vector<unsigned char> bitMap(w * h, 0);
-        for (size_t i = 0; i < smoothMap2.size(); ++i) {
-            if (smoothMap2[i] > threshold) bitMap[i] = 255;
+        for (size_t i = 0; i < map.size(); ++i) {
+            if (map[i] > threshold) bitMap[i] = 255;
         }
 
         std::vector<std::vector<Point2D>> blobs = FindBlobs(bitMap, w, h);
@@ -228,23 +188,7 @@ namespace OCR {
             }
             if (!expPoly.empty()) {
                 std::vector<Point2D> hull = GetConvexHull(expPoly);
-                Quad q = GetMinAreaRect(hull);
-                
-                // Aspect ratio filtering:
-                // Text quads are usually much wider than they are tall (for horizontal text).
-                // Or much taller than they are wide (for vertical text).
-                // But a thin vertical line on the edge of the page is often a false positive.
-                double wLen = Dist(q.p[0], q.p[1]);
-                double hLen = Dist(q.p[1], q.p[2]);
-                if (wLen > 0 && hLen > 0) {
-                    double ratio = wLen / hLen;
-                    // If it's extremely thin and tall, ignore it.
-                    if (ratio < 0.1 || ratio > 10.0) {
-                        // Keep it if it's horizontal, but if it's vertical and thin, it's likely the spine.
-                        if (ratio < 0.1) continue; 
-                    }
-                }
-                results.push_back(q);
+                results.push_back(GetMinAreaRect(hull));
             }
         }
         return results;
@@ -404,26 +348,6 @@ namespace OCR {
         bestQ.p[1] = right[0]; // TR
         bestQ.p[2] = right[1]; // BR
         bestQ.p[3] = left[1];  // BL
-
-        // Fix mirrored points. If text regions are rotated > 90 degrees,
-        // left/right assignment flips horizontally. CrossProduct checks winding order.
-        if (CrossProduct(bestQ.p[1], bestQ.p[2], bestQ.p[0]) < 0) {
-            std::swap(bestQ.p[0], bestQ.p[1]);
-            std::swap(bestQ.p[2], bestQ.p[3]);
-        }
-        
-        // Deskew alignment: text blocks heavily favor width > height.
-        // If height > width, orientation is rotated 90 degrees.
-        double wLenSq = DistSq(bestQ.p[0], bestQ.p[1]);
-        double hLenSq = DistSq(bestQ.p[1], bestQ.p[2]);
-        if (hLenSq > wLenSq) {
-            // Rotate the points by 1 position to assign long edge to width.
-            Point2D t0 = bestQ.p[0];
-            bestQ.p[0] = bestQ.p[3];
-            bestQ.p[3] = bestQ.p[2];
-            bestQ.p[2] = bestQ.p[1];
-            bestQ.p[1] = t0;
-        }
 
         return bestQ;
     }
