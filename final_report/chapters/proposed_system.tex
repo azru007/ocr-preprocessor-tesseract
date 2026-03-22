@@ -1,0 +1,14 @@
+\chapter{Proposed system}
+\section{System Architecture}
+The proposed system unifies a highly optimized C++ computational core containing the logical DBNet text detection, geometry unwarping, and adaptive binarization workflow, wrapped securely within a mobile Android Java Application structure.
+
+\section{Feasibility Study}
+The feasibility of the project was evaluated based on technical, operational, and economic factors. Technical feasibility was confirmed by the availability of the ONNX Runtime for Android and the NDK for C++ execution. Operational feasibility is justified by the increasing demand for high-accuracy mobile OCR. Economic feasibility is ensured by using open-source models and libraries.
+
+\section{System Components}
+The system consists of three primary layers:
+\begin{enumerate}
+    \item \textbf{Inference Layer}: Executes the DBNet model for text localization.
+    \item \textbf{Geometric Layer}: Handles perspective correction and cropping.
+    \item \textbf{Binarization Layer}: Applies Sauvola thresholding for image cleaning.
+\end{enumerate}

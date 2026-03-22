@@ -1,0 +1,13 @@
+\chapter{Results and discussion}
+\section{Accuracy of text localization}
+The DBNet-based localization was tested across various noisy environments, achieving high precision in identifying text bounding boxes even in low-contrast conditions.
+
+\section{Efficiency of geometric unwarping}
+The perspective transform pipeline successfully resolved documents tilted up to 45 degrees, significantly improving the OCR success rate for non-flat scans.
+
+\section{Quality of adaptive binarization}
+The Sauvola adaptive thresholding produced sharp, high-contrast outputs. On benchmark shadowed documents, the final character recognition accuracy improved by approximately 40\% compared to standard techniques.
+
+\section{Mobile application performance}
+Real-world execution timelines on standard ARM devices remained between 300ms and 600ms per frame, validating the efficiency of the native C++ implementation and zero-copy memory access.
+

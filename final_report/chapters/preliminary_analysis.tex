@@ -1,0 +1,19 @@
+\chapter{Preliminary analysis}
+\section{Software Requirements}
+The development and execution of the system require the following software environment:
+\begin{itemize}
+    \item \textbf{Operating System}: Android 8.0 (API level 26) or higher.
+    \item \textbf{Development Environment}: Android Studio (Giraffe or newer).
+    \item \textbf{Build System}: CMake 3.22.1 and Gradle 8.0.
+    \item \textbf{Libraries}: ONNX Runtime (Mobile), Android NDK r25, Tesseract OCR engine.
+    \item \textbf{Compiler}: Clang (part of NDK) for C++17 support.
+\end{itemize}
+
+\section{Hardware Requirements}
+For optimal performance and sub-second inference, the following hardware is recommended:
+\begin{itemize}
+    \item \textbf{Processor}: Multi-core ARMv8 processor (Snapdragon 700 series or equivalent).
+    \item \textbf{Memory}: Minimum 4GB RAM (8GB recommended for larger models).
+    \item \textbf{Camera}: 12MP or higher resolution with autofocus capability.
+    \item \textbf{Storage}: 100MB of free space for models and dictionary files.
+\end{itemize}

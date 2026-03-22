@@ -1,0 +1,15 @@
+\chapter{Introduction}
+\section{General Background}
+With the widespread adoption of smartphones and mobile computing, optical character recognition (OCR) of images captured by mobile device cameras has become an essential utility for digitizing physical documents, receipts, business cards, and public signboards. Real-world environments, however, introduce substantial noise and artifacts into captured images. These include complex and cluttered backgrounds, skewed perspectives due to the angle of the camera, harsh shadows, and variable lighting conditions resulting in low contrast. Standard OCR engines, such as Tesseract, which are primarily optimized for cleanly scanned flat documents, struggle significantly when encountering these artifacts, often producing garbled text or entirely failing to detect character regions. The \textbf{DBNet-Powered OCR Preprocessor} addresses this critical constraint by dynamically preparing unstructured photos for reliable OCR extraction, utilizing state-of-the-art edge-side deep learning techniques. 
+
+\section{Problem Statement}
+Existing mobile OCR systems largely rely on simple heuristics or lightweight classical computer vision algorithms, such as standard Otsu thresholding, for image preparation prior to text extraction. While these methods are highly suitable and efficient for flatbed scanners with uniform lighting, they systematically fail on smartphone photos featuring lighting gradients, shadows, or tilted text. A comprehensive, edge-based solution is needed that is capable of deeply parsing an image to accurately segregate text, rectify perspective skew, and dynamically binarize heavily shadowed regions. 
+
+\section{Objectives}
+The primary objective of this project is to build a robust, offline, natively executing preprocessing pipeline that bridges the gap between raw, noisy camera captures and traditional OCR engines. The specific objectives include:
+\begin{itemize}
+    \item Develop an autonomous C++ preprocessing engine Applying the DBNet model via the ONNX runtime library.
+    \item Address perspective warping through homography-based unwarping.
+    \item Normalize high-variance text illumination utilized accelerated Sauvola adaptive thresholding.
+    \item Integrate the native engine into a mobile Android application using the JNI pipeline.
+\end{itemize}

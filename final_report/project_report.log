@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.16)  16 MAR 2026 14:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.16)  22 MAR 2026 12:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -490,21 +490,153 @@ Package tocbibind Info: The document has chapter divisions on input line 50.
 
 Package tocbibind Note: Using chapter style headings, unless overridden.
 
+) (/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2024-01-20 v7.01h Hypertext links for LaTeX
+
+(/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
+Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+))
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty
+Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2023-11-26 v2.56 Cross-referencing by name of section
+
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+))
+\c@section@level=\count312
+)
+\@linkdim=\dimen178
+\Hy@linkcounter=\count313
+\Hy@pagecounter=\count314
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2024-01-20 v7.01h Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+\Hy@SavedSpaceFactor=\count315
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def
+File: puenc.def 2024-01-20 v7.01h Hyperref: PDF Unicode definition (HO)
+Now handling font encoding PU ...
+... no UTF-8 mapping file for font encoding PU
+)
+Package hyperref Info: Hyper figures OFF on input line 4179.
+Package hyperref Info: Link nesting OFF on input line 4184.
+Package hyperref Info: Hyper index ON on input line 4187.
+Package hyperref Info: Plain pages OFF on input line 4194.
+Package hyperref Info: Backreferencing OFF on input line 4199.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4446.
+\c@Hy@tempcnt=\count316
+LaTeX Info: Redefining \url on input line 4784.
+\XeTeXLinkMargin=\dimen179
+
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
+)
+))
+\Fld@menulength=\count317
+\Field@Width=\dimen180
+\Fld@charsize=\dimen181
+Package hyperref Info: Hyper figures OFF on input line 6063.
+Package hyperref Info: Link nesting OFF on input line 6068.
+Package hyperref Info: Hyper index ON on input line 6071.
+Package hyperref Info: backreferencing OFF on input line 6078.
+Package hyperref Info: Link coloring OFF on input line 6083.
+Package hyperref Info: Link coloring with OCG OFF on input line 6088.
+Package hyperref Info: PDF/A mode OFF on input line 6093.
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty
+Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
+package with kernel methods
+)
+\Hy@abspage=\count318
+\c@Item=\count319
+\c@Hfootnote=\count320
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2024-01-20 v7.01h Hyperref driver for pdfTeX
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty
+Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
+kage
+with kernel methods
+)
+\Fld@listcount=\count321
+\c@bookmark@seq@number=\count322
+
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+Package: rerunfilecheck 2022-07-10 v1.10 Rerun checks for auxiliary files (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+85.
+)
+\Hy@SectionHShift=\skip85
 )
 LaTeX Font Info:    Trying to load font information for OT1+txr on input line 7
 1.
- (/usr/share/texlive/texmf-dist/tex/latex/txfonts/ot1txr.fd
+
+(/usr/share/texlive/texmf-dist/tex/latex/txfonts/ot1txr.fd
 File: ot1txr.fd 2000/12/15 v3.1
 )
-(./project_report.aux (./coverpage.aux) (./certificate1.aux) (./declaration.aux
-) (./abstract.aux) (./acknowledgement.aux) (./ABBREVIATIONS.aux) (./symbol.aux)
-)
+(./project_report.aux (./frontmatter/coverpage.aux)
+(./frontmatter/certificate1.aux) (./frontmatter/declaration.aux)
+(./frontmatter/abstract.aux) (./frontmatter/acknowledgement.aux)
+(./frontmatter/ABBREVIATIONS.aux) (./frontmatter/symbol.aux)
+(./chapters/introduction.aux) (./chapters/literature_review.aux)
+(./chapters/proposed_system.aux) (./chapters/preliminary_analysis.aux)
+(./chapters/methodology.aux) (./chapters/results_discussion.aux)
+(./chapters/conclusion.aux) (./frontmatter/references.aux))
 \openout1 = `project_report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 71.
 LaTeX Font Info:    Trying to load font information for OML+txmi on input line 
 71.
- (/usr/share/texlive/texmf-dist/tex/latex/txfonts/omltxmi.fd
+
+(/usr/share/texlive/texmf-dist/tex/latex/txfonts/omltxmi.fd
 File: omltxmi.fd 2000/12/15 v3.1
 )
 LaTeX Font Info:    ... okay on input line 71.
@@ -538,54 +670,28 @@ LaTeX Font Info:    Trying to load font information for U+txexa on input line 7
 File: utxexa.fd 2000/12/15 v3.1
 )
 LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count312
-\scratchdimen=\dimen178
+\scratchcounter=\count323
+\scratchdimen=\dimen182
 \scratchbox=\box64
-\nofMPsegments=\count313
-\nofMParguments=\count314
+\nofMPsegments=\count324
+\nofMParguments=\count325
 \everyMPshowfont=\toks31
-\MPscratchCnt=\count315
-\MPscratchDim=\dimen179
-\MPnumerator=\count316
-\makeMPintoPDFobject=\count317
+\MPscratchCnt=\count326
+\MPscratchDim=\dimen183
+\MPnumerator=\count327
+\makeMPintoPDFobject=\count328
 \everyMPtoPDFconversion=\toks32
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
-
-(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty
-Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
-)
-(/usr/share/texlive/texmf-dist/tex/latex/grfext/grfext.sty
-Package: grfext 2019/12/03 v1.3 Manage graphics extensions (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
-Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
-))
-(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
-Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
-
-(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
-Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
-)
-(/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
-Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
-))
-(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
-Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
-)
-Package pdftexcmds Info: \pdf@primitive is available.
-Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode found.
-)
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 85.
-Package grfext Info: Graphics extension search list:
-(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
-G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 504.
 
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
@@ -638,6 +744,7 @@ Package gensymb Warning: Not defining \micro.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
 Package tocbasic Info: usage of `tocbibind' detected on input line 71.
 
@@ -656,54 +763,81 @@ Package tocbasic Warning: `tocbibind' redefinition of `\listoftables'
 (tocbasic)                Loading `tocbibind' before `tocbasic' would avoid
 (tocbasic)                this warning message.
 
-\openout2 = `coverpage.aux'.
+Package hyperref Info: Link coloring OFF on input line 71.
+(./project_report.out) (./project_report.out)
+\@outlinefile=\write3
+\openout3 = `project_report.out'.
 
-(./coverpage.tex
-LaTeX Font Info:    Trying to load font information for OT1+phv on input line 8
-.
- (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1phv.fd
-File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
-)
+\openout2 = `frontmatter/coverpage.aux'.
+
+ (./frontmatter/coverpage.tex
+*geometry* verbose mode - [ newgeometry ] result:
+* driver: pdftex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(72.26999pt, 452.9679pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 700.50687pt, 72.26999pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=452.9679pt
+* \textheight=700.50687pt
+* \oddsidemargin=0.0pt
+* \evensidemargin=0.0pt
+* \topmargin=-37.0pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=54.2025pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+LaTeX Font Info:    Font shape `OT1/txr/b/n' in size <12> not available
+(Font)              Font shape `OT1/txr/bx/n' tried instead on input line 9.
 LaTeX Font Info:    Font shape `OT1/txr/b/n' in size <17.28> not available
-(Font)              Font shape `OT1/txr/bx/n' tried instead on input line 8.
-LaTeX Font Info:    Trying to load font information for OT1+pzc on input line 1
-0.
+(Font)              Font shape `OT1/txr/bx/n' tried instead on input line 9.
+LaTeX Font Info:    Font shape `OT1/txr/b/n' in size <14.4> not available
+(Font)              Font shape `OT1/txr/bx/n' tried instead on input line 16.
+<figures/logo_gecp.png, id=148, 489.83pt x 515.9275pt>
+File: figures/logo_gecp.png Graphic file (type png)
+<use figures/logo_gecp.png>
+Package pdftex.def Info: figures/logo_gecp.png  used on input line 37.
+(pdftex.def)             Requested size: 146.95012pt x 154.77943pt.
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pzc.fd
-File: ot1pzc.fd 2020/03/25 font definitions for OT1/pzc.
-)
-LaTeX Font Info:    Trying to load font information for OT1+ppl on input line 1
-3.
+[1
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ppl.fd
-File: ot1ppl.fd 2001/06/04 font definitions for OT1/ppl.
-)
-LaTeX Font Info:    Font shape `OT1/pzc/m/n' in size <14.4> not available
-(Font)              Font shape `OT1/pzc/m/it' tried instead on input line 14.
-<gectemblem.jpg, id=1, 229.8186pt x 220.6644pt>
-File: gectemblem.jpg Graphic file (type jpg)
-<use gectemblem.jpg>
-Package pdftex.def Info: gectemblem.jpg  used on input line 24.
-(pdftex.def)             Requested size: 137.89221pt x 132.39964pt.
-LaTeX Font Info:    Font shape `OT1/txr/b/n' in size <10> not available
-(Font)              Font shape `OT1/txr/bx/n' tried instead on input line 28.
- [1
 
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-di
-st/fonts/enc/dvips/base/8r.enc} <./gectemblem.jpg>])
-\openout2 = `certificate1.aux'.
+st/fonts/enc/dvips/base/8r.enc} <./figures/logo_gecp.png>])
+\openout2 = `frontmatter/certificate1.aux'.
 
- (./certificate1.tex
-LaTeX Font Info:    Font shape `OT1/txr/b/n' in size <12> not available
-(Font)              Font shape `OT1/txr/bx/n' tried instead on input line 10.
-File: gectemblem.jpg Graphic file (type jpg)
-<use gectemblem.jpg>
-Package pdftex.def Info: gectemblem.jpg  used on input line 18.
-(pdftex.def)             Requested size: 114.90901pt x 110.33192pt.
+
+(./frontmatter/certificate1.tex
+File: figures/logo_gecp.png Graphic file (type png)
+<use figures/logo_gecp.png>
+Package pdftex.def Info: figures/logo_gecp.png  used on input line 18.
+(pdftex.def)             Requested size: 122.4572pt x 128.98155pt.
+
+Overfull \hbox (3.84555pt too wide) in paragraph at lines 24--25
+\OT1/txr/bx/n/12 Adithya P| \OT1/txr/m/n/12 (PKD22CS035),| \OT1/txr/bx/n/12 Kar
+thika Pazhampilly| \OT1/txr/m/n/12 (PKD22CS036) & \OT1/txr/bx/n/12 K H Musthafa
+l
+ []
+
 LaTeX Font Info:    Trying to load font information for U+txsya on input line 3
 1.
-
 (/usr/share/texlive/texmf-dist/tex/latex/txfonts/utxsya.fd
 File: utxsya.fd 2000/12/15 v3.1
 )
@@ -729,163 +863,274 @@ Overfull \hbox (47.38089pt too wide) in paragraph at lines 31--39
  [][] 
  []
 
-) [1
+)
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.116 \include{frontmatter/certificate1}
+                                         [1
+
+
+
+
+] [2]
+\openout2 = `frontmatter/declaration.aux'.
+
+ (./frontmatter/declaration.tex) [3
 
 
 
 ]
-\openout2 = `declaration.aux'.
+\openout2 = `frontmatter/abstract.aux'.
 
- (./declaration.tex) [2
-
-
-
-]
-\openout2 = `abstract.aux'.
-
- (./abstract.tex
+ (./frontmatter/abstract.tex
 LaTeX Font Info:    Font shape `OT1/txr/b/n' in size <24.88> not available
 (Font)              Font shape `OT1/txr/bx/n' tried instead on input line 2.
-) [1
+) [4
 
 
 
 
 ]
-\openout2 = `acknowledgement.aux'.
+\openout2 = `frontmatter/acknowledgement.aux'.
 
- (./acknowledgement.tex)
-[2
-
-
+ (./frontmatter/acknowledgement.tex)
+[5
 
 
-] (./project_report.toc [3
+
+
+] (./project_report.toc [6
 
 
 
 ])
-\tf@toc=\write3
-\openout3 = `project_report.toc'.
+\tf@toc=\write4
+\openout4 = `project_report.toc'.
 
- [4] (./project_report.lof)
-\tf@lof=\write4
-\openout4 = `project_report.lof'.
+ [7] (./project_report.lof)
+\tf@lof=\write5
+\openout5 = `project_report.lof'.
 
- [5
+ [8
 
 ]
 (./project_report.lot)
-\tf@lot=\write5
-\openout5 = `project_report.lot'.
+\tf@lot=\write6
+\openout6 = `project_report.lot'.
 
- [6
-
-]
-\openout2 = `ABBREVIATIONS.aux'.
-
- (./ABBREVIATIONS.tex) [7
-
+ [9
 
 ]
-\openout2 = `symbol.aux'.
+\openout2 = `frontmatter/ABBREVIATIONS.aux'.
 
- (./symbol.tex) [8
-
-
+ (./frontmatter/ABBREVIATIONS.tex) [10
 
 
 ]
+\openout2 = `frontmatter/symbol.aux'.
+
+
+(./frontmatter/symbol.tex) [11
+
+
+
+
+]
+\openout2 = `chapters/introduction.aux'.
+
+ (./chapters/introduction.tex
 Chapter 1.
-[1
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.7 
+     [1
+
 
 
 
 
 ]
 LaTeX Font Info:    Trying to load font information for TS1+txr on input line 1
-86.
+1.
  (/usr/share/texlive/texmf-dist/tex/latex/txfonts/ts1txr.fd
 File: ts1txr.fd 2000/12/15 v3.1
-) [2] [3]
-Chapter 2.
-[4
+))
+pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.138 \include{chapters/introduction}
+                                      [2]
+\openout2 = `chapters/literature_review.aux'.
 
-] [5]
+ (./chapters/literature_review.tex
+Chapter 2.
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.3}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.13 
+      [3
+
+
+
+
+])
+pdfTeX warning (ext4): destination with the same identifier (name{page.4}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.139 \include{chapters/literature_review}
+                                           [4]
+\openout2 = `chapters/proposed_system.aux'.
+
+ (./chapters/proposed_system.tex
 Chapter 3.
-LaTeX Font Info:    Font shape `OT1/txr/b/n' in size <14.4> not available
-(Font)              Font shape `OT1/txr/bx/n' tried instead on input line 212.
+)
+pdfTeX warning (ext4): destination with the same identifier (name{page.5}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.140 \include{chapters/proposed_system}
+                                         [5
+
+
+
+
+]
+\openout2 = `chapters/preliminary_analysis.aux'.
+
+
+(./chapters/preliminary_analysis.tex
+Chapter 4.
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.6}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.19 \end{itemize}
+                   [6
+
+
+
+
+])
+pdfTeX warning (ext4): destination with the same identifier (name{page.7}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.141 \include{chapters/preliminary_analysis}
+                                              [7]
+\openout2 = `chapters/methodology.aux'.
+
+ (./chapters/methodology.tex
+Chapter 5.
+)
+pdfTeX warning (ext4): destination with the same identifier (name{page.8}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.142 \include{chapters/methodology}
+                                     [8
+
+
+
+
+]
+pdfTeX warning (ext4): destination with the same identifier (name{page.9}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.142 \include{chapters/methodology}
+                                     [9]
+\openout2 = `chapters/results_discussion.aux'.
+
+ (./chapters/results_discussion.tex
+Chapter 6.
+)
+pdfTeX warning (ext4): destination with the same identifier (name{page.10}) has
+ been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.143 \include{chapters/results_discussion}
+                                            [10
+
+
+
+
+]
+\openout2 = `chapters/conclusion.aux'.
+
+ (./chapters/conclusion.tex
+Chapter 7.
+)
+pdfTeX warning (ext4): destination with the same identifier (name{page.11}) has
+ been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.144 \include{chapters/conclusion}
+                                    [11
+
+
+
+
+]
+\openout2 = `frontmatter/references.aux'.
+
+ (./frontmatter/references.tex
 LaTeX Font Info:    Trying to load font information for OT1+txtt on input line 
-215.
+12.
+
 (/usr/share/texlive/texmf-dist/tex/latex/txfonts/ot1txtt.fd
 File: ot1txtt.fd 2000/12/15 v3.1
-)
-Overfull \hbox (67.12148pt too wide) in paragraph at lines 215--216
-[]\OT1/txr/bx/n/12 TextDetector\OT1/txr/m/n/12 : Loads the quan-tized DB-Net we
-ights na-tively us-ing [][]\OT1/txtt/m/n/12 onnxruntime_cxx_api.h[]\OT1/txr/m/n
-/12 .
- []
+)) [12
 
-[6
 
-] [7] [8]
-Chapter 4.
-[9
+
+
 
 ]
-Overfull \hbox (0.83478pt too wide) in paragraph at lines 246--248
-\OT1/txr/m/n/12 fied, thresh-olded im-age. This Bitmap is then passed to the []
-[]\OT1/txtt/m/n/12 TessBaseAPI.setImage()
- []
-
-
-Overfull \hbox (27.96617pt too wide) in paragraph at lines 246--248
-[]\OT1/txr/m/n/12 method of the Tesser-act OCR li-brary. The back-ground Corou-
-tine awaits the [][]\OT1/txtt/m/n/12 getUTF8Text()
- []
-
-[10]
-Chapter 5.
-[11
-
-]
-Chapter 6.
-[12
-
-] [13
-
-] (./project_report.aux (./coverpage.aux) (./certificate1.aux)
-(./declaration.aux) (./abstract.aux) (./acknowledgement.aux)
-(./ABBREVIATIONS.aux) (./symbol.aux))
+(./project_report.aux (./frontmatter/coverpage.aux)
+(./frontmatter/certificate1.aux) (./frontmatter/declaration.aux)
+(./frontmatter/abstract.aux) (./frontmatter/acknowledgement.aux)
+(./frontmatter/ABBREVIATIONS.aux) (./frontmatter/symbol.aux)
+(./chapters/introduction.aux) (./chapters/literature_review.aux)
+(./chapters/proposed_system.aux) (./chapters/preliminary_analysis.aux)
+(./chapters/methodology.aux) (./chapters/results_discussion.aux)
+(./chapters/conclusion.aux) (./frontmatter/references.aux))
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2020/03/25>
  ***********
+Package rerunfilecheck Info: File `project_report.out' has not changed.
+(rerunfilecheck)             Checksum: 64A7EFA77AAEB1F8F432A671D1925D28;5835.
  ) 
 Here is how much of TeX's memory you used:
- 9734 strings out of 476182
- 164649 string characters out of 5795595
- 1929975 words of memory out of 5000000
- 31436 multiletter control sequences out of 15000+600000
- 591404 words of font info for 107 fonts, out of 8000000 for 9000
+ 15848 strings out of 476182
+ 264409 string characters out of 5795595
+ 1931975 words of memory out of 5000000
+ 37389 multiletter control sequences out of 15000+600000
+ 586755 words of font info for 98 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 110i,10n,107p,1182b,422s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 110i,12n,107p,1075b,580s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/rtcxr.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/txfonts/rtxb.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/public/txfonts/rtxmi.pfb></usr/share/texlive/texmf-dist/f
 onts/type1/public/txfonts/rtxr.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/txfonts/txex.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfont
-s/txsy.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txtt.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/t
-exlive/texmf-dist/fonts/type1/urw/palatino/uplbi8a.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/time
-s/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/urw/zapfchan/uzcmi8a.pfb>
-Output written on project_report.pdf (24 pages, 474401 bytes).
+ublic/txfonts/txsy.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfont
+s/txtt.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on project_report.pdf (24 pages, 245059 bytes).
 PDF statistics:
- 153 PDF objects out of 1000 (max. 8388607)
- 97 compressed objects within 1 object stream
- 0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 351 PDF objects out of 1000 (max. 8388607)
+ 301 compressed objects within 4 object streams
+ 57 named destinations out of 1000 (max. 500000)
+ 294 words of extra memory for PDF output out of 10000 (max. 10000000)
 

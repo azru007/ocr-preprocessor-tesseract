@@ -1,0 +1,16 @@
+\chapter{Literature review}
+\section{Scene Text Localization Techniques}
+Classical methods such as Maximally Stable Extremal Regions (MSER) and stroke width transforms provided the early foundation for segmenting characters from backgrounds. However, these methods often struggled with the noise and complex textures found in real-world camera captures.
+
+\section{Deep Learning Architectures in OCR}
+Modern OCR has shifted towards CNN-based architectures. Efficiency-oriented models like EAST and CRAFT have significantly improved the ability to detect text at scale by leveraging deep feature hierarchies.
+
+\section{Differentiable Binarization (DBNet)}
+DBNet represents a significant advancement by incorporating a differentiable binarization module. This allows the network to learn optimal thresholding per-pixel during training, leading to extremely accurate bounding box predictions for document images.
+
+\section{Mobile Document Rectification}
+Perspective distortion is a major hurdle for mobile OCR. Standard homography and 4-point perspective transforms are essential for transforming skewed camera captures into normalized, flat documents suitable for OCR engines.
+
+\section{Adaptive Thresholding Algorithms}
+Sauvola thresholding is particularly effective for document binarization, as it adapts locally to lighting variations. When accelerated with integral images, it becomes viable for real-time execution on mobile hardware.
+
