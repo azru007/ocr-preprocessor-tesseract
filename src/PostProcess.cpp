@@ -78,6 +78,19 @@ namespace OCR {
             binData[i] = (gray[i] > threshold) ? 255 : 0;
         }
 
+        // 4. Ensure correct polarity: text should be black (minority) on white (majority).
+        //    If black pixels are the majority after thresholding, invert.
+        int blackCount = 0;
+        int totalPixels = w * h;
+        for (int i = 0; i < totalPixels; ++i) {
+            if (binData[i] == 0) blackCount++;
+        }
+        if (blackCount > totalPixels / 2) {
+            for (int i = 0; i < totalPixels; ++i) {
+                binData[i] = 255 - binData[i];
+            }
+        }
+
         return ImageBuffer(binData, w, h, 1, true);
     }
 
@@ -179,42 +192,42 @@ namespace OCR {
         int h = src.h;
         int c = src.channels;
         
-        if (h < 3) return ImageBuffer(src.data, w, h, c, false); // Too small to process, return shallow copy/original logic handled by caller? 
-        // Actually we need to return a new buffer because ImageBuffer owns its data by default in our usage pattern
-        // Or we can just copy it.
+        // Too small to process meaningfully
+        if (w < 3 || h < 3) {
+            size_t size = (size_t)w * h * c;
+            unsigned char* newData = (unsigned char*)malloc(size);
+            memcpy(newData, src.data, size);
+            return ImageBuffer(newData, w, h, c, true);
+        }
         
-        // Helper to get row average luminance
-        auto getRowAvg = [&](int y) -> double {
-            double sum = 0;
-            for (int x = 0; x < w; ++x) {
-                unsigned char grayVal;
-                int idx = (y * w + x) * c;
-                if (c >= 3) {
-                     unsigned char r = src.data[idx];
-                     unsigned char g = src.data[idx + 1];
-                     unsigned char b = src.data[idx + 2];
-                     grayVal = (unsigned char)(0.299f * r + 0.587f * g + 0.114f * b);
-                } else {
-                     grayVal = src.data[idx];
-                }
-                sum += grayVal;
+        // 1. Convert to grayscale
+        std::vector<unsigned char> gray(w * h);
+        if (c >= 3) {
+            for (int i = 0; i < w * h; ++i) {
+                unsigned char r = src.data[i * c + 0];
+                unsigned char g = src.data[i * c + 1];
+                unsigned char b = src.data[i * c + 2];
+                gray[i] = (unsigned char)(0.299f * r + 0.587f * g + 0.114f * b);
             }
-            return sum / w;
-        };
-
-        // Center Row
-        double centerAvg = getRowAvg(h / 2);
+        } else {
+            for (int i = 0; i < w * h; ++i) gray[i] = src.data[i * c];
+        }
         
-        // Edge Rows (Top and Bottom)
-        double edgeAvg = (getRowAvg(0) + getRowAvg(h - 1)) / 2.0;
-
-        // Logic: 
-        // If Center (Text) is Lighter (> value) than Edge (Background), 
-        // it means we have Light Text on Dark Background.
-        // We want Dark Text on Light Background.
-        // So we should INVERT.
+        // 2. Use Otsu to find threshold, then count black vs white pixels.
+        //    In a normal document text region, background pixels (white/light)
+        //    are the majority and text pixels (black/dark) are the minority.
+        //    If dark pixels are the majority, the image has a dark background
+        //    and we need to invert.
+        int threshold = GetOtsuThreshold(gray);
         
-        bool needInvert = (centerAvg > edgeAvg);
+        int darkCount = 0;
+        int totalPixels = w * h;
+        for (int i = 0; i < totalPixels; ++i) {
+            if (gray[i] <= threshold) darkCount++;
+        }
+        
+        // If more than half the pixels are dark, we have a dark background
+        bool needInvert = (darkCount > totalPixels / 2);
         
         // Create new buffer
         size_t size = (size_t)w * h * c;
