@@ -63,6 +63,3 @@ The tool is configured to **always store output in the project root's output fol
 
 **Directory Cleaning**: The `output/` directory is **automatically cleaned** (all files deleted) every time you run the tool to ensure you only see results from the latest run.
 
-## License
-
-[Add License Information Here]
